@@ -4,6 +4,8 @@
 """
 Precompiles NLEQ2 sources (downloaded when needed) to object files
 for speeding up compilations further ahead.
+
+TODO: add a confirmation step where the user accepts the ZIB license.
 """
 
 websrc='http://elib.zib.de/pub/elib/codelib/nleq2/'
@@ -13,7 +15,7 @@ md5sums= {'linalg_nleq2.f': '28ed88f1ae7bab8dc850348b5e734881',
           'wnorm.f':        '77189300200be5748152fa28dc236963',
           'zibconst.f':     '5d912441fb6f55d10c8b98bbb9168195',
           'zibmon.f':       'e2ac1a20fc6294cb3e0d7f65bbac53e6',
-          'zibsec.f':       '6520c958f2bd339b435a68541d5b910b',
+#          'zibsec.f':       '6520c958f2bd339b435a68541d5b910b',
       } # July 26, 2010 version
 
 def main():
