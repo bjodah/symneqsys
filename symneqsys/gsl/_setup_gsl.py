@@ -14,8 +14,8 @@ def main(cwd, logger):
         # Intel Fortran fails for opkda1.f, hence prefer `gnu`
         runner = CCompilerRunner(
             [fpath], dst, run_linker=False,
-            flags=['-DGSL_RANGE_CHECK_OFF'],
-            cwd=cwd, options=['pic', 'warn', 'fast'],
+            flags=['-DGSL_RANGE_CHECK_OFF', '-DHAVE_INLINE'],
+            cwd=cwd, options=['pic', 'warn', 'fast', 'c99'],
             preferred_vendor='gnu', metadir='prebuilt/',
             logger=logger)
         runner.run()

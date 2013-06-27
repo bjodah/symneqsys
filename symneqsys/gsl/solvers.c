@@ -26,39 +26,41 @@ const gsl_multiroot_fdfsolver_type * get_fdfsolver_type(int index){
 
 
 int
-solve(size_t dim, double * x, double * params, double rtol, int fdfsolver_type_idx)
+_solve(size_t dim, double * x, void * params, double atol, int fdfsolver_type_idx, int itermax)
 {
+  // TODO: store intermediate steps and store in an output arg.
   const gsl_multiroot_fdfsolver_type *T;
   gsl_multiroot_fdfsolver *s;
 
   int status;
 
-  size_t i, iter = 0;
+  size_t iter = 0;
 
-  gsl_multiroot_function_fdf f = {&func, &jac, dim, &p};
+  gsl_multiroot_function_fdf f = {&func, &jac, &fdf, dim, params};
   
-  gsl_vector *xvec = gsl_vector_FROM_ARRAY(x, dim);
+  gsl_block xblk = {dim, x}; // we already have a contigous x-array passed into function
+  gsl_vector xvec = {dim, 1, x, xblk, 0};
   
   T = get_fdfsolver_type(fdfsolver_type_idx);
   s = get_multiroot_fdfsolver_alloc(T, dim);
-  gsl_multiroot_fdfsolver_set(s, &func, &jac, x);
+  gsl_multiroot_fdfsolver_set(s, &f, &xvec);
   
-  print_state (iter, s);
+  print_state(iter, s);
 
   do
     {
       iter++;
       status = gsl_multiroot_fdfsolver_iterate(s);
 
-      print_state (iter, s);
+      print_state(iter, s);
       if (status)
 	break;
 
+      status = gsl_multiroot_test_residual(s->f, atol)
     }
-  whilhe (status == GSL_CONTINUE && iter < itermax);
+  while (status == GSL_CONTINUE && iter < itermax);
 
   gsl_multiroot_fdfsolver_free(s);
-  gsl_vector_free (xvec);
 
   return GSL_SUCCESS;
 }

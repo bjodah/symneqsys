@@ -14,20 +14,13 @@ func (const gsl_vector * x, void * params, gsl_vector * f)
   /*
     Best is to name all parameters k[0] ... k[P]
    */
-  double *k = (double *) params;
+  const double *k = (double *) params;
 
   /*
     Define variables for common subexpressions
    */
 % for cse_token, cse_expr in cse_func:
-  double ${cse_token};
-% endfor
-
-  /*
-    Calculate common subexpressions
-   */
-% for cse_token, cse_expr in cse_func:
-  ${cse_token} = ${cse_expr};
+  const double ${cse_token} = ${cse_expr};
 % endfor
 
   /*
@@ -44,37 +37,20 @@ func (const gsl_vector * x, void * params, gsl_vector * f)
 int
 jac (const gsl_vector * x, void *params, gsl_matrix * J)
 {
-  double *k = (double *) params;
-  gsl_matrix_view dfdy_mat = gsl_matrix_view_array(dfdy, ${NY}, ${NY});
-  gsl_matrix *m = &dfdy_mat.matrix;
-
+  const double *k = (double *) params;
   /*
     Define variables for common subexpressions
    */
 % for cse_token, cse_expr in cse_jac:
-  double ${cse_token};
+  const double ${cse_token} = ${cse_expr};
 % endfor
 
-  /*
-    Calculate common subexpressions
-   */
-% for cse_token, cse_expr in cse_jac:
-  ${cse_token} = ${cse_expr};
-% endfor
 
   /*
     Populate the NY times NY Jacobian matrix
    */
 % for (i, j), expr in jac:
-    gsl_matrix_set (m, ${i}, ${j}, ${expr});
-% endfor
-
-
-  /*
-    Populate the array dfdt of length NY
-   */
-% for i, expr in dfdt:
-  dfdt[${i}] = ${expr};
+    gsl_matrix_set (J, ${i}, ${j}, ${expr});
 % endfor
 
   return GSL_SUCCESS;

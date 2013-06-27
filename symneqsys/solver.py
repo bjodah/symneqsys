@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 
 class Solver(object):
     """
@@ -6,14 +9,11 @@ class Solver(object):
 
     atol = None
     rtol = None
-    solution = None
-    success = None
 
-    def __init__(self, neqsys):
+    def set_neqsys(self, neqsys):
         self._neqsys = neqsys
 
-
-    def solve(self, maxiter=100):
+    def run(self, x0, maxiter=100):
         """
         Solves the neqsys
         store solution in self.solution with variable symbols as keys
@@ -21,16 +21,29 @@ class Solver(object):
         """
         pass
 
-
     def __getitem__(self, key):
-        if self.success == None:
-            raise RuntimeError('Success flag have not been set, have solve method been run?')
-        if self.success == False:
-            raise RuntimeError('The previous solve invocation failed. (the success attribute == False)')
-        if self.solution == None:
-            raise RuntimeError('No solution in Solver, please report a bug.')
+        if self.num_result.success:
+            try:
+                return self.solution[key]
+            except KeyError:
+                return self.solution[self._neqsys[key]]
 
-        try:
-            return self.solution[key]
-        except KeyError:
-            return self.solution[self._neqsys[key]]
+
+class SciPy_Solver(Solver):
+
+    method = 'lm' # Least sqaure sense (linearly dep. rel. incl.)
+
+    @property
+    def options(self):
+        return {'xtol' = self._atol}
+
+
+    def run(self, x0, maxiter=100):
+        import scipy.optimize
+
+        self.num_result = scipy.optimize.root(
+            fun = self._neqsys.evaluate_residual,
+            x0 = x0,
+            method = self.method,
+            jac = self._neqsys.evaluate_jac,
+            options = self.options)
