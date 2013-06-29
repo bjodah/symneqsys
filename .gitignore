@@ -1,3 +1,15 @@
+TAGS
+*~
+.*~
+*.pyc
+.#*
+#*#
+*/*~
+*/.*~
+*/*.pyc
+*/.#*
+*/#*#
+*/*.so
 symneqsys/nleq2/nleq2.f
 symneqsys/nleq2/wnorm.f
 symneqsys/nleq2/linalg_nleq2.f

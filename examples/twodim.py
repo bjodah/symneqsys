@@ -10,8 +10,8 @@ Parameters taken from GNU GSL Manual
 
 from sympy import exp as e
 
-from symneqsys import SimpleNEQSys, NLP
-from symneqsys.nleq2 import NLEQ2_Solver
+from symneqsys import SimpleNEQSys, NLRFP
+from symneqsys.solver import SciPy_Solver
 
 
 class ExampleSys(SimpleNEQSys):
@@ -31,8 +31,8 @@ def main():
     """
 
     sys = ExampleSys()
-    problem = NLP(sys, guess={'x0': 1.0, 'x1': 1.0},
-                  solver=NLEQ2_Solver)
+    problem = NLRFP(sys, guess={'x0': 1.0, 'x1': 1.0},
+                  solver=SciPy_Solver)
 
     sucess = problem.solve(maxiter=100)
 
