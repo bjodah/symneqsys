@@ -19,7 +19,8 @@ class ExampleSys(SimpleNEQSys):
     param_tokens = 'A'
     var_tokens = 'x0 x1'
 
-    def expressions(self):
+    @property
+    def exprs(self):
         x0, x1, A = self['x0'], self['x1'], self['A']
         return [A*x0*x1-1,
                 (e(-x0)+e(-x1)-(1+1/A))]
@@ -31,10 +32,10 @@ def main():
     """
 
     sys = ExampleSys()
-    problem = NLRFP(sys, guess={'x0': 1.0, 'x1': 1.0},
-                  solver=SciPy_Solver)
+    problem = NLRFP(sys, {'A': 100}, guess={'x0': 1.0, 'x1': 1.0},
+                    solver=SciPy_Solver())
 
-    sucess = problem.solve(maxiter=100)
+    success = problem.solve(maxiter=100)
 
     if success:
         print("Successfully found a root at x0={}, x1={}".format(
