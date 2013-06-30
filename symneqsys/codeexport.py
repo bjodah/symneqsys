@@ -12,6 +12,19 @@ class NEQSys_Code(Generic_Code):
         super(NEQSys_Code, self).__init__(**kwargs)
 
 
+    @property
+    def variables(self):
+        func_code, cse_func_code = self._get_cse_code(
+            self._neqsys.exprs, 'csefunc')
+
+        jac_code, cse_jac_code = self._get_cse_code(
+            self._neqsys.jac.tolist(), 'csefunc')
+
+        return {'func': func_code,
+                'cse_func': cse_func_code,
+                'jac': jac_code_code,
+                'cse_jac': cse_jac_code}
+
 
 class BinarySolver(Solver):
 

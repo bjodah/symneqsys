@@ -11,8 +11,8 @@ Parameters taken from GNU GSL Manual
 from sympy import exp as e
 
 from symneqsys import SimpleNEQSys, NLRFP
-from symneqsys.solver import SciPy_Solver
-
+#from symneqsys.solver import SciPy_Solver
+from symneqsys.gsl import GSL_Solver
 
 class ExampleSys(SimpleNEQSys):
 
@@ -33,9 +33,9 @@ def main():
 
     sys = ExampleSys()
     problem = NLRFP(sys, {'A': 100}, guess={'x0': 1.0, 'x1': 1.0},
-                    solver=SciPy_Solver())
+                    solver=GSL_Solver())#SciPy_Solver())
 
-    success = problem.solve(maxiter=100)
+    success = problem.solve(itermax=100)
 
     if success:
         print("Successfully found a root at x0={}, x1={}".format(

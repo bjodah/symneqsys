@@ -8,7 +8,7 @@ cdef extern int _solve(
 fdfsolver_types = ('newton', 'gnewton', 'hybridj', 'hybridsj')
 
 def solve(double [:] x0, double [:] params, double atol,
-          str solver_type = 'gnewton', int intermax=100):
+          str solver_type = 'gnewton', int itermax=100):
     cdef np.ndarray[np.float64_t, ndim=1] x_arr = np.ascontiguousarray(x0)
     cdef np.ndarray[np.float64_t, ndim=1] params_arr = np.ascontiguousarray(params)
 

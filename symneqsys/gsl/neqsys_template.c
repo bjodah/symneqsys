@@ -26,7 +26,7 @@ func (const gsl_vector * x, void * params, gsl_vector * f)
   /*
     Assign derivatives
    */
-% for i, expr in enumerate(f):
+% for i, expr in enumerate(func):
   f[${i}] = ${expr};
 % endfor
 

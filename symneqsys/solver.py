@@ -17,7 +17,7 @@ class Solver(object):
         self._neqsys = neqsys
 
 
-    def run(self, x0, params, maxiter=100):
+    def run(self, x0, params, itermax=100):
         """
         Solves the neqsys
         store solution in self.solution with variable symbols as keys
@@ -43,7 +43,7 @@ class SciPy_Solver(Solver):
         return {'xtol': self._atol}
 
 
-    def run(self, x0, params, maxiter=100):
+    def run(self, x0, params, itermax=100):
         import scipy.optimize
 
         self.num_result = scipy.optimize.root(

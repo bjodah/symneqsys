@@ -75,7 +75,7 @@ class NLRFP(object):
         pass
 
 
-    def solve(self, maxiter=100):
+    def solve(self, itermax=100):
         """
         Attempts to numerically solve the problem using
         the Solver subclass instance.
@@ -84,7 +84,7 @@ class NLRFP(object):
         """
         x0_vals = [self.guess[k] for k in self._neqsys.v]
         param_vals = [self.params[k] for k in self._neqsys.params]
-        self.solver.run(x0_vals, param_vals, maxiter)
+        self.solver.run(x0_vals, param_vals, itermax)
         return self.solver.num_result.success
 
 
