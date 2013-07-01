@@ -16,4 +16,4 @@ symneqsys/nleq2/linalg_nleq2.f
 symneqsys/nleq2/zibconst.f
 symneqsys/nleq2/zibsec.f
 symneqsys/nleq2/zibmon.f
-symneqsys/nleq2/prebuilt/*.*
+symneqsys/*/prebuilt/*.*
