@@ -1,3 +1,5 @@
+from itertools import chain
+
 from pycompilation.codeexport import Generic_Code
 from symneqsys.solver import Solver
 
@@ -15,18 +17,19 @@ class NEQSys_Code(Generic_Code):
         super(NEQSys_Code, self).__init__(**kwargs)
 
 
-    @property
     def variables(self):
-        func_code, cse_func_code = self._get_cse_code(
+        func_cse_defs, func_new_code = self._get_cse_code(
             self._neqsys.exprs, 'csefunc')
 
-        jac_code, cse_jac_code = self._get_cse_code(
-            self._neqsys.jac.tolist(), 'csefunc')
+        jac_cse_defs, jac_new_code = self._get_cse_code(
+            chain.from_iterable(self._neqsys.jac.tolist()),
+            'csefunc')
 
-        return {'func': func_code,
-                'cse_func': cse_func_code,
-                'jac': jac_code_code,
-                'cse_jac': cse_jac_code}
+        return {'func_cse_defs': func_cse_defs,
+                'func_new_code': func_new_code,
+                'jac_cse_defs': jac_cse_defs,
+                'jac_new_code': jac_new_code,
+                'NX': self._neqsys.nx}
 
 
     def as_arrayified_code(self, expr):

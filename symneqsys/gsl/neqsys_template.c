@@ -3,9 +3,6 @@
 #include <math.h>
 
 // Python Mako template of C file
-// Variables: f, cse_func
-// Variables: jac, dfdt, NY, cse_jac
-// CSE tokens: cse%d
 
 
 int
@@ -15,19 +12,20 @@ func (const gsl_vector * x, void * params, gsl_vector * f)
     Best is to name all parameters k[0] ... k[P]
    */
   const double *k = (double *) params;
+  const double * const y = (double *) x->data;
 
   /*
     Define variables for common subexpressions
    */
-% for cse_token, cse_expr in cse_func:
+% for cse_token, cse_expr in func_cse_defs:
   const double ${cse_token} = ${cse_expr};
 % endfor
 
   /*
     Assign derivatives
    */
-% for i, expr in enumerate(func):
-  f[${i}] = ${expr};
+% for i, expr in enumerate(func_new_code):
+  gsl_vector_set(f, ${i}, ${expr});
 % endfor
 
   return GSL_SUCCESS;
@@ -38,10 +36,12 @@ int
 jac (const gsl_vector * x, void *params, gsl_matrix * J)
 {
   const double *k = (double *) params;
+  const double * const y = (double *) x->data;
+
   /*
     Define variables for common subexpressions
    */
-% for cse_token, cse_expr in cse_jac:
+% for cse_token, cse_expr in jac_cse_defs:
   const double ${cse_token} = ${cse_expr};
 % endfor
 
@@ -49,8 +49,8 @@ jac (const gsl_vector * x, void *params, gsl_matrix * J)
   /*
     Populate the NY times NY Jacobian matrix
    */
-% for (i, j), expr in jac:
-    gsl_matrix_set (J, ${i}, ${j}, ${expr});
+% for i, expr in enumerate(jac_new_code):
+  gsl_matrix_set (J, ${i // NX}, ${i % NX}, ${expr});
 % endfor
 
   return GSL_SUCCESS;

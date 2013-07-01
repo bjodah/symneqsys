@@ -34,7 +34,7 @@ _solve(size_t dim, double * x, void * params, double atol, int fdfsolver_type_id
 
   int status;
 
-  size_t iter = 0;
+  int iter = 0;
 
   gsl_multiroot_function_fdf f = {&func, &jac, &fdf, dim, params};
   
@@ -66,11 +66,11 @@ _solve(size_t dim, double * x, void * params, double atol, int fdfsolver_type_id
 
 
 void
-print_state (size_t iter, gsl_multiroot_fdfsolver * s, size_t dim)
+print_state (int iter, gsl_multiroot_fdfsolver * s, size_t dim)
 {
-  size_t i;
+  int i;
   printf ("iter = %3u", iter);
-  for (i=0; i<dim; ++i){
+  for (i=0; i < (int)dim; ++i){
     printf("% .3f % .3f",   
 	   gsl_vector_get (s->x, i),
 	   gsl_vector_get (s->f, i)

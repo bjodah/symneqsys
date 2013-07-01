@@ -1,5 +1,8 @@
 import os
 
+import numpy as np
+import cython_gsl
+
 from pycompilation import CCompilerRunner
 from pycompilation.codeexport import C_Code
 
@@ -29,7 +32,7 @@ class GSL_Code(NEQSys_Code, C_Code):
     extension_name = 'solvers_wrapper'
 
 
-    v_tok = 'x' # see neqsys_template.c
+    v_tok = 'y' # see neqsys_template.c
     v_offset = None
 
     param_tok = 'k' # see neqsys_template.c
@@ -63,5 +66,5 @@ class GSL_Solver(BinarySolver):
                 assert v in self.solve_args[k]
 
         self.num_result = self.binary_mod.solve(
-            self.x0, self.params, self._atol,
+            np.array(x0, dtype=np.float64), np.array(params, dtype=np.float64), self._atol,
             itermax=itermax, **kwargs)

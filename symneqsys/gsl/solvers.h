@@ -7,7 +7,7 @@ int
 _solve(size_t dim, double * x, void * params, double atol, int fdfsolver_type_idx, int itermax);
 
 void
-print_state (size_t iter, gsl_multiroot_fdfsolver * s, size_t dim);
+print_state (int iter, gsl_multiroot_fdfsolver * s, size_t dim);
 
 
 #endif
