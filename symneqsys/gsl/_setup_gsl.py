@@ -11,7 +11,6 @@ def main(cwd, logger):
     fpath = os.path.join(cwd, f)
     dst = 'prebuilt/solvers.o'
     if missing_or_other_newer(dst, f):
-        # Intel Fortran fails for opkda1.f, hence prefer `gnu`
         runner = CCompilerRunner(
             [fpath], dst, run_linker=False,
             flags=['-DGSL_RANGE_CHECK_OFF', '-DHAVE_INLINE'],

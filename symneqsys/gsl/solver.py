@@ -1,12 +1,16 @@
+import os
+
+from pycompilation import CCompilerRunner
 from pycompilation.codeexport import C_Code
+
 
 from symneqsys.codeexport import BinarySolver, NEQSys_Code
 
 
 class GSL_Code(NEQSys_Code, C_Code):
 
-    _copy_files = ['solvers.c'
-        'prebuilt/solvers_wrapper.o',
+    _copy_files = ['solvers.c',
+                   'prebuilt/solvers_wrapper.o',
                    'prebuilt/solvers.o',
                    'solvers.h', 'neqsys.h', 'Makefile',
                    'prebuilt/'+CCompilerRunner.metadata_filename, # <--- Make sure we compile with same compiler
@@ -23,6 +27,14 @@ class GSL_Code(NEQSys_Code, C_Code):
     _so_file = 'solvers_wrapper.so'
 
     extension_name = 'solvers_wrapper'
+
+
+    v_tok = 'x' # see neqsys_template.c
+    v_offset = None
+
+    param_tok = 'k' # see neqsys_template.c
+    param_offset = None
+
 
     def __init__(self, *args, **kwargs):
         self._basedir = os.path.dirname(__file__)
@@ -43,7 +55,7 @@ class GSL_Solver(BinarySolver):
                   }
 
 
-    def run(self, x0, params, itermax=100, *kwargs):
+    def run(self, x0, params, itermax=100, **kwargs):
 
         for k,v in kwargs.items():
             # Assert valid option provided
