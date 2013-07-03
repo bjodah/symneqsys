@@ -4,13 +4,13 @@
 from __future__ import division, print_function
 
 """
-Example of a 2 dimensional root finidng problem.
+Example of a 2 dimensional root finidng problem (Powell).
 Parameters taken from GNU GSL Manual
 """
 
 from sympy import exp as e
 
-from symneqsys import SimpleNEQSys, NLRFP
+from symneqsys import SimpleNEQSys, Problem
 #from symneqsys.solver import SciPy_Solver
 from symneqsys.gsl import GSL_Solver
 
@@ -32,8 +32,8 @@ def main():
     """
 
     sys = ExampleSys()
-    problem = NLRFP(sys, {'A': 100}, guess={'x0': 1.0, 'x1': 1.0},
-                    solver=GSL_Solver())#SciPy_Solver())
+    problem = Problem(sys, {'A': 1e4}, guess={'x0': 0.5, 'x1': 1.5},
+                    solver=GSL_Solver(tempdir='./tmp'))#SciPy_Solver())
 
     success = problem.solve(itermax=100)
 

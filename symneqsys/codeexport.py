@@ -29,7 +29,8 @@ class NEQSys_Code(Generic_Code):
                 'func_new_code': func_new_code,
                 'jac_cse_defs': jac_cse_defs,
                 'jac_new_code': jac_new_code,
-                'NX': self._neqsys.nx}
+                'NX': self._neqsys.nx,
+                'NPARAMS': len(self._neqsys.params)}
 
 
     def as_arrayified_code(self, expr):
@@ -59,6 +60,9 @@ class BinarySolver(Solver):
         self.tempdir = kwargs.pop('tempdir', None)
         self.save_temp = kwargs.pop('save_temp', False)
         self.logger = kwargs.pop('logger', None)
+        if len(kwargs) > 0:
+            raise TypeError('{} got (an) unexpected keyword argument(s): {}'.format(
+                self, ', '.join(kwargs.keys())))
         #super(BinarySolver, self).__init__(**kwargs)
 
 

@@ -5,7 +5,7 @@ def main(cwd, logger):
     # Cythonize pyx file
     src = 'solvers_wrapper.pyx'
     dst = 'prebuilt/solvers_wrapper.o'
-    pyx2obj(src, dst, cwd=cwd, logger=logger, only_update=True)
+    pyx2obj(src, dst, cwd=cwd, logger=logger, only_update=True, metadir='prebuilt/')
 
     f = 'solvers.c'
     fpath = os.path.join(cwd, f)

@@ -60,8 +60,16 @@ jac (const gsl_vector * x, void *params, gsl_matrix * J)
 int
 fdf (const gsl_vector * x, void *params, gsl_vector *f, gsl_matrix * J)
 {
+  int i, j;
   func(x, params, f);
   jac(x, params, J);
+  printf("%d\n",f->size);
+  for (i=0; i < f->size; ++i){
+    for (j=0; j < f->size; ++j){
+      printf("%.3f ", gsl_matrix_get(J, i, j));
+    }
+    printf("%.3f\n", gsl_vector_get(f,i));
+  }
   
   return GSL_SUCCESS;
 }

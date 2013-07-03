@@ -1,6 +1,8 @@
 from collections import OrderedDict
 
-class NLRFP(object):
+import numpy as np
+
+class Problem(object):
     """
     Non-linear Root Finding Problem class
     Can perform variable substitution and scaling for
@@ -42,6 +44,17 @@ class NLRFP(object):
         self._inv_trnsfm = inv_trnsfm
         self._scaling = scaling
 
+        # Check for singlarity
+        assert not self.check_jac_singular()
+
+    def check_jac_singular(self):
+        from scipy import linalg
+        try:
+            linalg.inv(self._neqsys.evaluate_jac(
+                self.x0_array, self.params_array))
+        except linalg.LinAlgError:
+            return True
+        return False
 
     @property
     def solution(self):
@@ -75,6 +88,15 @@ class NLRFP(object):
         pass
 
 
+    @property
+    def x0_array(self):
+        return np.array([self.guess[k] for k in self._neqsys.v], dtype=np.float64)
+
+    @property
+    def params_array(self):
+        return np.array([self.params[k] for k in self._neqsys.params], dtype=np.float64)
+
+
     def solve(self, itermax=100):
         """
         Attempts to numerically solve the problem using
@@ -82,9 +104,7 @@ class NLRFP(object):
 
         Returns success (True/False)
         """
-        x0_vals = [self.guess[k] for k in self._neqsys.v]
-        param_vals = [self.params[k] for k in self._neqsys.params]
-        self.solver.run(x0_vals, param_vals, itermax)
+        self.solver.run(self.x0_array, self.params_array, itermax)
         return self.solver.num_result.success
 
 
