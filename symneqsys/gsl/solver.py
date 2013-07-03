@@ -59,46 +59,6 @@ class GSL_Solver(BinarySolver):
 
 
     def run(self, x0, params, itermax=100, **kwargs):
-
-        for k,v in kwargs.items():
-            # Assert valid option provided
-            if k in self.solve_args:
-                assert v in self.solve_args[k]
-
-        status, x_arr = self.binary_mod.solve(#np.array(x0, dtype=np.float64), np.array(params, dtype=np.float64)
-            x0, params, self._atol,
+        self.num_result = self.binary_mod.solve(
+            x0, params, self.abstol,
             itermax=itermax, **kwargs)
-
-        self.num_result = Result({
-            'x': x_arr,
-            'success': status == 0,
-            'status': status,
-            'message': 'See gsl_errno.h',
-            'fun': self.binary_mod.residuals(
-                x_arr, params),
-            'jac': self.binary_mod.jac(
-                x_arr, params),
-            # 'nfev': ,
-            # 'njev': ,
-            # 'nit': ,
-            })
-
-
-class Result(dict):
-    """ Copy from scipy/optimize/optimize.py, cannot import  """
-    def __getattr__(self, name):
-        try:
-            return self[name]
-        except KeyError:
-            raise AttributeError(name)
-
-    __setattr__ = dict.__setitem__
-    __delattr__ = dict.__delitem__
-
-    def __repr__(self):
-        if self.keys():
-            m = max(map(len, self.keys())) + 1
-            return '\n'.join([k.rjust(m) + ': ' + repr(v)
-                              for k, v in self.iteritems()])
-        else:
-            return self.__class__.__name__ + "()"

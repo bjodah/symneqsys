@@ -9,15 +9,16 @@ class Solver(object):
     Solver class taking a NEQSys instance as input
     """
 
-    _atol = 1e-6
-    _rtol = 1e-6
+    abstol = 1e-6
+    reltol = 1e-6
 
+    solve_args = {} # speical keyword arguments to run in subclasses
 
     def set_neqsys(self, neqsys):
         self._neqsys = neqsys
 
 
-    def run(self, x0, params, itermax=100):
+    def run(self, x0, params, itermax=100, **kwargs):
         """
         Solves the neqsys
         store solution in self.solution with variable symbols as keys
@@ -40,7 +41,7 @@ class SciPy_Solver(Solver):
 
     @property
     def options(self):
-        return {'xtol': self._atol}
+        return {'xtol': self.abstol}
 
 
     def run(self, x0, params, itermax=100):

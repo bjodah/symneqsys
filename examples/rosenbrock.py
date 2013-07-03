@@ -4,36 +4,34 @@
 from __future__ import division, print_function
 
 """
-Example of a 2 dimensional root finidng problem (Powell).
+Example of a 2 dimensional root finidng problem (Rosenbrock).
 Parameters taken from GNU GSL Manual
 """
 
-from sympy import exp as e
-
 from symneqsys import SimpleNEQSys, Problem
-#from symneqsys.solver import SciPy_Solver
 from symneqsys.gsl import GSL_Solver
 
-class ExampleSys(SimpleNEQSys):
-
-    param_tokens = 'A'
+class RosenbrockSys(SimpleNEQSys):
+    param_tokens = 'a b'
     var_tokens = 'x0 x1'
 
     @property
     def exprs(self):
-        x0, x1, A = self['x0'], self['x1'], self['A']
-        return [A*x0*x1-1,
-                (e(-x0)+e(-x1)-(1+1/A))]
+        x0, x1, a, b = [self[token] for token \
+                        in ('x0', 'x1', 'a', 'b')]
+        return [a*(1-x0),
+                b*(x1-x0**2)]
 
-
-def main(solver_type):
+def main(Sys, solver_type):
     """
     Solve the example system using NLEQ2 fortran routine.
     """
 
-    sys = ExampleSys()
-    problem = Problem(sys, {'A': 1e4}, guess={'x0': 0.5, 'x1': 1.5},
-                    solver=GSL_Solver(save_temp=True, tempdir='./build/powell'))#SciPy_Solver())
+    sys = Sys()
+    solver=GSL_Solver(save_temp=True, tempdir='./build/rosenbrock')
+    solver.abstol = 1e-8
+    problem = Problem(sys, {'a':1, 'b':10}, guess={'x0': -10, 'x1': -5},
+                      solver=solver)
 
     success = problem.solve(itermax=100, solver_type=solver_type)
 
@@ -47,7 +45,6 @@ def main(solver_type):
 
 
 if __name__ == '__main__':
-    main('newton')
-    main('gnewton')
-    main('hybridj') # segfaults...
-    main('hybridsj')
+    for solver_type in ('newton', 'gnewton', 'hybridj', 'hybridsj'):
+        print('='*30)
+        main(RosenbrockSys, solver_type)

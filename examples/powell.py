@@ -14,7 +14,7 @@ from symneqsys import SimpleNEQSys, Problem
 #from symneqsys.solver import SciPy_Solver
 from symneqsys.gsl import GSL_Solver
 
-class ExampleSys(SimpleNEQSys):
+class PowellSys(SimpleNEQSys):
 
     param_tokens = 'A'
     var_tokens = 'x0 x1'
@@ -26,14 +26,15 @@ class ExampleSys(SimpleNEQSys):
                 (e(-x0)+e(-x1)-(1+1/A))]
 
 
-def main(solver_type):
+def main(Sys, solver_type):
     """
     Solve the example system using NLEQ2 fortran routine.
     """
 
-    sys = ExampleSys()
+    sys = Sys()
     problem = Problem(sys, {'A': 1e4}, guess={'x0': 0.5, 'x1': 1.5},
-                    solver=GSL_Solver(save_temp=True, tempdir='./build/powell'))#SciPy_Solver())
+                      solver=GSL_Solver(save_temp=True, tempdir='./build/powell'))
+
 
     success = problem.solve(itermax=100, solver_type=solver_type)
 
@@ -47,7 +48,6 @@ def main(solver_type):
 
 
 if __name__ == '__main__':
-    main('newton')
-    main('gnewton')
-    main('hybridj') # segfaults...
-    main('hybridsj')
+    for solver_type in ('newton', 'gnewton', 'hybridj', 'hybridsj'):
+        print('='*30)
+        main(PowellSys, solver_type)

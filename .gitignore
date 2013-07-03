@@ -10,6 +10,7 @@ TAGS
 */.#*
 */#*#
 */*.so
+*/build
 */tmp
 */*/tmp
 symneqsys/nleq2/nleq2.f

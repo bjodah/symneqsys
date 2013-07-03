@@ -18,6 +18,10 @@ class NEQSys_Code(Generic_Code):
 
 
     def variables(self):
+        """
+        Returns code fragments for (dense) population of vectors
+        and matrices.
+        """
         func_cse_defs, func_new_code = self._get_cse_code(
             self._neqsys.exprs, 'csefunc')
 
@@ -25,10 +29,20 @@ class NEQSys_Code(Generic_Code):
             chain.from_iterable(self._neqsys.jac.tolist()),
             'csefunc')
 
+        fj_cse_defs, fj_new_code = self._get_cse_code(
+            chain(self._neqsys.exprs, chain.from_iterable(
+                self._neqsys.jac.tolist())), 'csefuncjac')
+
+        fj_func_new_code = fj_new_code[:self._neqsys.nx]
+        fj_jac_new_code = fj_new_code[self._neqsys.nx:]
+
         return {'func_cse_defs': func_cse_defs,
                 'func_new_code': func_new_code,
                 'jac_cse_defs': jac_cse_defs,
                 'jac_new_code': jac_new_code,
+                'fj_cse_defs': fj_cse_defs,
+                'fj_func_new_code': fj_func_new_code,
+                'fj_jac_new_code': fj_jac_new_code,
                 'NX': self._neqsys.nx,
                 'NPARAMS': len(self._neqsys.params)}
 

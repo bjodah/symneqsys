@@ -2,8 +2,13 @@
 #include <gsl/gsl_errno.h>
 #include <math.h>
 
+#include "neqsys.h"
 // Python Mako template of C file
 
+// Global counters
+int NFEV = 0;
+int NJEV = 0;
+int NFJEV = 0;
 
 int
 func (const gsl_vector * x, void * params, gsl_vector * f)
@@ -22,12 +27,13 @@ func (const gsl_vector * x, void * params, gsl_vector * f)
 % endfor
 
   /*
-    Assign derivatives
+    Calculate residuals
    */
 % for i, expr in enumerate(func_new_code):
   gsl_vector_set(f, ${i}, ${expr});
 % endfor
 
+  NFEV++;
   return GSL_SUCCESS;
 }
 
@@ -53,6 +59,7 @@ jac (const gsl_vector * x, void *params, gsl_matrix * J)
   gsl_matrix_set (J, ${i // NX}, ${i % NX}, ${expr});
 % endfor
 
+  NJEV++;
   return GSL_SUCCESS;
 }
 
@@ -60,16 +67,32 @@ jac (const gsl_vector * x, void *params, gsl_matrix * J)
 int
 fdf (const gsl_vector * x, void *params, gsl_vector *f, gsl_matrix * J)
 {
-  int i, j;
-  func(x, params, f);
-  jac(x, params, J);
-  printf("%d\n",f->size);
-  for (i=0; i < f->size; ++i){
-    for (j=0; j < f->size; ++j){
-      printf("%.3f ", gsl_matrix_get(J, i, j));
-    }
-    printf("%.3f\n", gsl_vector_get(f,i));
-  }
+  const double *k = (double *) params;
+  const double * const y = (double *) x->data;
+
+  /*
+    Define variables for common subexpressions
+   */
+% for cse_token, cse_expr in fj_cse_defs:
+  const double ${cse_token} = ${cse_expr};
+% endfor
+
+  /*
+    Calculate residuals
+   */
+% for i, expr in enumerate(fj_func_new_code):
+  gsl_vector_set(f, ${i}, ${expr});
+% endfor
+
+
+  /*
+    Populate the NY times NY Jacobian matrix
+   */
+% for i, expr in enumerate(fj_jac_new_code):
+  gsl_matrix_set (J, ${i // NX}, ${i % NX}, ${expr});
+% endfor
+
   
+  NFJEV++;
   return GSL_SUCCESS;
 }

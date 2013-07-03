@@ -97,14 +97,16 @@ class Problem(object):
         return np.array([self.params[k] for k in self._neqsys.params], dtype=np.float64)
 
 
-    def solve(self, itermax=100):
+    def solve(self, itermax=100, **kwargs):
         """
         Attempts to numerically solve the problem using
         the Solver subclass instance.
 
+        additional keyword arguments are passed on to solver
+
         Returns success (True/False)
         """
-        self.solver.run(self.x0_array, self.params_array, itermax)
+        self.solver.run(self.x0_array, self.params_array, itermax, **kwargs)
         return self.solver.num_result.success
 
 
