@@ -8,8 +8,11 @@ for speeding up compilations further ahead.
 TODO: add a confirmation step where the user accepts the ZIB license.
 """
 
+from pycompilation import FortranCompilerRunner, pyx2obj
+from pycompilation.helpers import download_files, compile_sources
 
-def main(cwd, main):
+
+def main(cwd, logger):
     return
     websrc='http://elib.zib.de/pub/elib/codelib/nleq2/'
     files=['nleq2.f', 'wnorm.f', 'linalg_nleq2.f', 'zibconst.f', 'zibsec.f', 'zibmon.f']
@@ -22,11 +25,12 @@ def main(cwd, main):
           } # July 26, 2010 version
 
 
-    download_files(websrc, files, cwd, md5sums)
+    download_files(websrc, files, md5sums, cwd)
     # Intel Fortran fails for opkda1.f, hence prefer `gnu`
-    compile_sources(FortranCompilerRunner, files, 'prebuilt/',
-                    cwd=cwd, run_linker=False,
-                    cwd=cwd, options=['pic', 'warn', 'fast'],
+    compile_sources(FortranCompilerRunner, files,
+                    'prebuilt/', cwd=cwd,
+                    run_linker=False,
+                    options=['pic', 'warn', 'fast'],
                     preferred_vendor='gnu', metadir=dst, logger=logger)
 
     # Cythonize pyx file, and compile to object file

@@ -5,6 +5,7 @@ from pycompilation.helpers import run_sub_setup
 
 from symneqsys.nleq2._setup_nleq2 import main as nleq2_main
 from symneqsys.gsl._setup_gsl import main as gsl_main
+from symneqsys.minpack._setup_minpack import main as minpack_main
 
 def main():
     """
@@ -26,6 +27,13 @@ def main():
         os.path.dirname(__file__)),
                        './symneqsys/gsl/')
     run_sub_setup(cwd, gsl_main, logger)
+
+    # MINPACK
+    cwd = os.path.join(os.path.abspath(
+        os.path.dirname(__file__)),
+                       './symneqsys/minpack/')
+    run_sub_setup(cwd, minpack_main, logger)
+
 
 if __name__ == '__main__':
     main()

@@ -13,6 +13,13 @@ TAGS
 */build
 */tmp
 */*/tmp
+symneqsys/minpack/dpmpar.f
+symneqsys/minpack/enorm.f
+symneqsys/minpack/lmder.f
+symneqsys/minpack/lmder1.f
+symneqsys/minpack/lmpar.f
+symneqsys/minpack/qrfac.f
+symneqsys/minpack/qrsolv.f
 symneqsys/nleq2/nleq2.f
 symneqsys/nleq2/wnorm.f
 symneqsys/nleq2/linalg_nleq2.f
