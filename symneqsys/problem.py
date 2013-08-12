@@ -21,6 +21,8 @@ class Problem(object):
         """
         self._neqsys = neqsys
 
+        assert len(neqsys.exprs) >= len(neqsys.v)
+
         # store params (default 1.0)
         if params == None:
             self.params = {k: 1.0 for k in self._neqsys.v}
@@ -44,8 +46,11 @@ class Problem(object):
         self._inv_trnsfm = inv_trnsfm
         self._scaling = scaling
 
-        # Check for singlarity
-        assert not self.check_jac_singular()
+        # Check for singlarity if number of expressions
+        # does not exceed the number of variables
+        if len(self._neqsys.exprs) == len(self._neqsys.v):
+            assert not self.check_jac_singular()
+
 
     def check_jac_singular(self):
         from scipy import linalg

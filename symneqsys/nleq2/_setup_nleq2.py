@@ -8,8 +8,8 @@ for speeding up compilations further ahead.
 TODO: add a confirmation step where the user accepts the ZIB license.
 """
 
-from pycompilation import FortranCompilerRunner, pyx2obj
-from pycompilation.util import download_files, compile_sources
+from pycompilation import FortranCompilerRunner, pyx2obj, compile_sources
+from pycompilation.util import download_files
 
 
 def main(cwd, logger):
@@ -27,7 +27,7 @@ def main(cwd, logger):
 
     download_files(websrc, files, md5sums, cwd)
     # Intel Fortran fails for opkda1.f, hence prefer `gnu`
-    compile_sources(FortranCompilerRunner, files,
+    compile_sources(files, FortranCompilerRunner,
                     'prebuilt/', cwd=cwd,
                     run_linker=False,
                     options=['pic', 'warn', 'fast'],

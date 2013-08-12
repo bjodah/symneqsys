@@ -30,7 +30,7 @@ class ChemSys(SimpleNEQSys):
         ]
 
 
-def main(Sys, solver_type):
+def main(Sys):
     """
     Solve the example system using Levenberg-Marquardt algorithm
     from Netlib's MINPACK fortran code.
@@ -44,16 +44,16 @@ def main(Sys, solver_type):
             'OHm': 1e-7, 'H2O': 1.0}
     params.update({'init_'+key: val for key,val in init.iteritems()})
     problem = Problem(sys, params, guess=init, solver=solver)
-    success = problem.solve(itermax=100, solver_type=solver_type)
+    success = problem.solve(itermax=100, solver_type='lm')
 
     if success:
         print("Successfully found a root: "+\
               ", ".join([key+'='+str(problem.solution[sys[key]]) for key in init.keys()])+\
-              ", using "+solver_type)
+              ", using Levenberg-Marquard (lm)")
     else:
         print("Root-finding unsuccessful.")
     print('Full numerical info:', problem.solver.num_result)
 
 
 if __name__ == '__main__':
-    main(ChemSys, 'lm')
+    main(ChemSys)

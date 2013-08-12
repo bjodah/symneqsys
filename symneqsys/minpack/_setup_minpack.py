@@ -3,8 +3,8 @@
 
 from __future__ import print_function, division
 
-from pycompilation import FortranCompilerRunner,  pyx2obj
-from pycompilation.util import download_files, compile_sources
+from pycompilation import FortranCompilerRunner, pyx2obj, compile_sources
+from pycompilation.util import download_files
 
 """
 Precompiles Levenberg Marquardt sources of netlib/minpack (downloaded when needed)
@@ -28,7 +28,7 @@ def main(cwd, logger):
     }
 
     download_files(websrc, f_sources, md5sums, cwd)
-    compile_sources(FortranCompilerRunner, f_sources,
+    compile_sources(f_sources, FortranCompilerRunner,
                     'prebuilt/', cwd=cwd,
                     run_linker=False,
                     options=['pic', 'warn', 'fast'],

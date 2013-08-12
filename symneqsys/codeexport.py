@@ -28,19 +28,19 @@ class NEQSys_Code(Generic_Code):
             )
 
         func_cse_defs, func_new_code = self.get_cse_code(
-            self._neqsys.exprs, 'csefunc', dummy_groups)
+            self._neqsys.exprs, 'cse', dummy_groups)
 
         jac_cse_defs, jac_new_code = self.get_cse_code(
             chain.from_iterable(self._neqsys.jac.tolist()),
-            'csefunc', dummy_groups)
+            'cse', dummy_groups)
 
         fj_cse_defs, fj_new_code = self.get_cse_code(
             chain(self._neqsys.exprs, chain.from_iterable(
-                self._neqsys.jac.tolist())), 'csefuncjac',
+                self._neqsys.jac.tolist())), 'cse',
             dummy_groups)
 
-        fj_func_new_code = fj_new_code[:self._neqsys.nx]
-        fj_jac_new_code = fj_new_code[self._neqsys.nx:]
+        fj_func_new_code = fj_new_code[:len(self._neqsys.v)]
+        fj_jac_new_code = fj_new_code[len(self._neqsys.v):]
 
         return {'func_cse_defs': func_cse_defs,
                 'func_new_code': func_new_code,
@@ -49,7 +49,8 @@ class NEQSys_Code(Generic_Code):
                 'fj_cse_defs': fj_cse_defs,
                 'fj_func_new_code': fj_func_new_code,
                 'fj_jac_new_code': fj_jac_new_code,
-                'NX': self._neqsys.nx,
+                'NX': len(self._neqsys.v),
+                'NE': len(self._neqsys.exprs),
                 'NPARAMS': len(self._neqsys.params)}
 
 

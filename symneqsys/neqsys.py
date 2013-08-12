@@ -20,19 +20,9 @@ class NEQSys(object):
 
 
     @property
-    def nx(self):
-        return len(self.v)
-
-
-    @property
-    def nexprs(self):
-        return len(self.exprs)
-
-
-    @property
     def jac(self):
         return sympy.Matrix(
-            self.nexprs, self.nx,
+            len(self.exprs), len(self.v),
             lambda r, c: self.exprs[r].diff(self.v[c]))
 
 
