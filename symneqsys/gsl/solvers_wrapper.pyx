@@ -2,6 +2,8 @@ import time
 import numpy as np
 cimport numpy as cnp
 
+from symneqsys.codeexport import Result
+
 cdef extern int _solve(
     size_t dim, double * x, void * params, double atol,
     int fdfsolver_type_idx, int itermax, int print_,
@@ -65,24 +67,3 @@ def jac(double [:] x, double [:] params):
     c_jac(x.shape[0], &x_arr[0], &params_arr[0], &out_arr[0])
 
     return out_arr.reshape((x.shape[0], x.shape[0]))
-
-
-
-class Result(dict):
-    """ Copy from scipy/optimize/optimize.py, cannot import  """
-    def __getattr__(self, name):
-        try:
-            return self[name]
-        except KeyError:
-            raise AttributeError(name)
-
-    __setattr__ = dict.__setitem__
-    __delattr__ = dict.__delitem__
-
-    def __repr__(self):
-        if self.keys():
-            m = max(map(len, self.keys())) + 1
-            return '\n'.join([k.rjust(m) + ': ' + repr(v)
-                              for k, v in self.iteritems()])
-        else:
-            return self.__class__.__name__ + "()"

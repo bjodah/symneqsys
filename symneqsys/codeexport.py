@@ -1,6 +1,6 @@
 from itertools import chain
 
-from pycompilation.codeexport import Generic_Code
+from pycompilation.codeexport import Generic_Code, DummyGroup
 from symneqsys.solver import Solver
 
 class NEQSys_Code(Generic_Code):
@@ -9,7 +9,7 @@ class NEQSys_Code(Generic_Code):
     returned by NEQSys.evaluate_residual and NEQSys.evaluate_jac
     """
 
-    tempdir_basename = "_symodesys_compile"
+    tempdir_basename = "_symneqsys_compile"
 
 
     def __init__(self, neqsys, **kwargs):
@@ -22,16 +22,22 @@ class NEQSys_Code(Generic_Code):
         Returns code fragments for (dense) population of vectors
         and matrices.
         """
-        func_cse_defs, func_new_code = self._get_cse_code(
-            self._neqsys.exprs, 'csefunc')
+        dummy_groups = (
+            DummyGroup('vdummies', self._neqsys.v, self.v_tok, self.v_offset),
+            DummyGroup('paramdummies', self._neqsys.params, self.param_tok, self.param_offset),
+            )
 
-        jac_cse_defs, jac_new_code = self._get_cse_code(
+        func_cse_defs, func_new_code = self.get_cse_code(
+            self._neqsys.exprs, 'csefunc', dummy_groups)
+
+        jac_cse_defs, jac_new_code = self.get_cse_code(
             chain.from_iterable(self._neqsys.jac.tolist()),
-            'csefunc')
+            'csefunc', dummy_groups)
 
-        fj_cse_defs, fj_new_code = self._get_cse_code(
+        fj_cse_defs, fj_new_code = self.get_cse_code(
             chain(self._neqsys.exprs, chain.from_iterable(
-                self._neqsys.jac.tolist())), 'csefuncjac')
+                self._neqsys.jac.tolist())), 'csefuncjac',
+            dummy_groups)
 
         fj_func_new_code = fj_new_code[:self._neqsys.nx]
         fj_jac_new_code = fj_new_code[self._neqsys.nx:]
@@ -45,25 +51,6 @@ class NEQSys_Code(Generic_Code):
                 'fj_jac_new_code': fj_jac_new_code,
                 'NX': self._neqsys.nx,
                 'NPARAMS': len(self._neqsys.params)}
-
-
-    def as_arrayified_code(self, expr):
-        """
-        We want to access variables as elements of arrays..
-        """
-
-        # Dummify the expr (to avoid regular expressions to run berserk)
-        expr = self._dummify_expr(expr, 'vdummies', self._neqsys.v)
-        expr = self._dummify_expr(expr, 'paramdummies', self._neqsys.params)
-
-        # Generate code string
-        scode = self.wcode(expr)
-
-        # getitem syntaxify
-        scode = self._getitem_syntaxify(scode, 'vdummies', self.v_tok, self.v_offset)
-        scode = self._getitem_syntaxify(scode, 'paramdummies', self.param_tok, self.param_offset)
-
-        return scode
 
 
 class BinarySolver(Solver):
@@ -104,3 +91,22 @@ class BinarySolver(Solver):
         if self._binary_mod == None:
             self._binary_mod = self._code.compile_and_import_binary()
         return self._binary_mod
+
+class Result(dict):
+    """ Copy from scipy/optimize/optimize.py, cannot import  """
+    def __getattr__(self, name):
+        try:
+            return self[name]
+        except KeyError:
+            raise AttributeError(name)
+
+    __setattr__ = dict.__setitem__
+    __delattr__ = dict.__delitem__
+
+    def __repr__(self):
+        if self.keys():
+            m = max(map(len, self.keys())) + 1
+            return '\n'.join([k.rjust(m) + ': ' + repr(v)
+                              for k, v in self.iteritems()])
+        else:
+            return self.__class__.__name__ + "()"

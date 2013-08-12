@@ -19,19 +19,19 @@ const gsl_multiroot_fdfsolver_type * get_fdfsolver_type(int index){
   }
 }
 
-int _solve(size_t dim, double * x, void * params, double atol, int fdfsolver_type_idx, int itermax, int print_, int store_intermediate, double * intermediate, int * iter, int * nfev_, int * njev_, int * nfjev_)
+int _solve(size_t dim, double * x, void * params, double atol,
+	   int fdfsolver_type_idx, int itermax, int print_, 
+	   int store_intermediate, double * intermediate, 
+	   int * iter, int * nfev_, int * njev_, int * nfjev_)
 {
   // TODO: store intermediate steps and store in an output arg.
+  int status;
+
   const gsl_multiroot_fdfsolver_type *T = get_fdfsolver_type(fdfsolver_type_idx);
-  gsl_multiroot_fdfsolver *s;
-
-
+  gsl_multiroot_fdfsolver *s = gsl_multiroot_fdfsolver_alloc(T, dim);
   gsl_multiroot_function_fdf f = {&func, &jac, &fdf, dim, params};
-  
   gsl_block xblk = {dim, x}; // we already have a contigous x-array passed into function
   gsl_vector xvec = {dim, 1, x, &xblk, 0};
-  
-  s = gsl_multiroot_fdfsolver_alloc(T, dim);
   gsl_multiroot_fdfsolver_set(s, &f, &xvec);
 
   *iter = 0;
@@ -40,7 +40,6 @@ int _solve(size_t dim, double * x, void * params, double atol, int fdfsolver_typ
   NJEV = 0;
   NFJEV = 0;
 
-  int status;
   gsl_set_error_handler_off(); // Don't abort the program upon errors
 
   if (store_intermediate){
@@ -68,7 +67,7 @@ int _solve(size_t dim, double * x, void * params, double atol, int fdfsolver_typ
 
       status = gsl_multiroot_test_residual(s->f, atol);
     }
-  while (status == GSL_CONTINUE && *iter < itermax);
+  while (status == GSL_CONTINUE && *iter < itermax-1);
 
   // Store global counters, see neqsys.h
   *nfev_ = NFEV;

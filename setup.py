@@ -1,7 +1,7 @@
 import os
 import logging
 
-from pycompilation.helpers import run_sub_setup
+from pycompilation.util import run_sub_setup
 
 from symneqsys.nleq2._setup_nleq2 import main as nleq2_main
 from symneqsys.gsl._setup_gsl import main as gsl_main

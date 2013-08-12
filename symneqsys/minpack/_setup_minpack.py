@@ -4,7 +4,7 @@
 from __future__ import print_function, division
 
 from pycompilation import FortranCompilerRunner,  pyx2obj
-from pycompilation.helpers import download_files, compile_sources
+from pycompilation.util import download_files, compile_sources
 
 """
 Precompiles Levenberg Marquardt sources of netlib/minpack (downloaded when needed)
@@ -34,8 +34,7 @@ def main(cwd, logger):
                     options=['pic', 'warn', 'fast'],
                     preferred_vendor='gnu', metadir='prebuilt/', logger=logger)
 
-    return
     # Cythonize pyx file, and compile to object file
-    src = 'solvers_wrapper.pyx'
-    dst = 'prebuilt/solvers_wrapper.o'
+    src = 'neqsys_wrapper.pyx'
+    dst = 'prebuilt/neqsys_wrapper.o'
     pyx2obj(src, dst, cwd=cwd, logger=logger, only_update=True)

@@ -42,12 +42,14 @@ def main(Sys, solver_type):
         print("Successfully found a root at x0={}, x1={}, using {}".format(
             problem.solution[sys['x0']], problem.solution[sys['x1']],
             solver_type))
-        print('Full numerical info:', problem.solver.num_result)
     else:
         print("Root-finding unsuccessful.")
+    print('Full numerical info:', problem.solver.num_result)
 
 
 if __name__ == '__main__':
     for solver_type in ('newton', 'gnewton', 'hybridj', 'hybridsj'):
         print('='*30)
+        print(solver_type)
+        print('-'*30)
         main(PowellSys, solver_type)

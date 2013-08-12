@@ -9,7 +9,7 @@ TODO: add a confirmation step where the user accepts the ZIB license.
 """
 
 from pycompilation import FortranCompilerRunner, pyx2obj
-from pycompilation.helpers import download_files, compile_sources
+from pycompilation.util import download_files, compile_sources
 
 
 def main(cwd, logger):
