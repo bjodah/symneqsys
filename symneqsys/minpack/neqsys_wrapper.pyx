@@ -9,7 +9,7 @@ from symneqsys.codeexport import Result
 cdef extern void lm_solve(double * x, double * tol, int * info)
 
 cdef extern void func(
-    int * m, int * n, double * x, double * f, double * j, int * ldj, int * iflag
+    int * m, int * n, double * x, double * f, double * j, int * ldfjac, int * iflag
 )
 
 cdef extern void get_nfev(int * nfev)
@@ -17,30 +17,39 @@ cdef extern void get_njev(int * njev)
 cdef extern void get_ne(int * ne_)
 cdef extern void get_nx(int * nx_)
 
-def solve(double [:] x0, double [:] params, double atol,
+# lmder1_info is from lmder1.f
+lmder1_info = {
+    0: 'improper input parameters.',
+    1: 'algorithm estimates that the relative error in the sum of squares is at most tol.',
+    2: 'algorithm estimates that the relative error between x and the solution is at most tol.',
+    3: 'conditions for info = 1 and info = 2 both hold.',
+    4: 'fvec is orthogonal to the columns of the jacobian to machine precision.',
+    5: 'number of calls to fcn with iflag = 1 has reached 100*(n+1).',
+    6: 'tol is too small. no further reduction in the sum of squares is possible.',
+    7: 'tol is too small. no further improvement in the approximate solution x is possible.',
+}
+
+def solve(double [:] x0, double [:] params, double tol,
           str solver_type = 'lm', int itermax=100):
     """
     Solve using Levenberg-Marquardt algorithm
     """
-    cdef double[:] x0_arr = x0.copy() # or np.ascontiguousarray ?
-    cdef double[:] params_arr = params.copy() # or np.ascontiguousarray ?
-    cdef cnp.ndarray[cnp.float64_t, ndim=1] x_and_param = \
-        np.empty(x0.shape[0]+params.shape[0])
+    cdef cnp.ndarray[cnp.float64_t, ndim=1] x_arr = np.concatenate((x0[::1], params[::1]))
     cdef int nfev, njev, status
 
     start = time.time()
-    lm_solve(&x_and_param[0], &atol, &status)
+    lm_solve(&x_arr[0], &tol, &status)
     end = time.time()
     get_nfev(&nfev)
     get_njev(&njev)
 
     return Result({
-        'x': x0_arr,
-        'success': status == 0,
+        'x': x_arr[:x0.size],
+        'success': status == 1 or status == 2 or status == 3,
         'status': status,
-        'message': 'See lmder1.f for status meaning',
-        'fun': residuals(x0_arr, params_arr),
-        'jac': jac(x0_arr, params_arr),
+        'message': lmder1_info[status],
+        'fun': residuals(x0, params),
+        'jac': jac(x0, params),
         'nfev': nfev,
         'njev': njev,
         #'nit': iter_,
@@ -59,12 +68,12 @@ def residuals(double [:] x, double [:] params):
         np.empty(m)
     cdef cnp.ndarray[cnp.float64_t, ndim=2, mode='fortran'] fjac = \
         np.empty((m,n), order='F')
-    cdef int ldj = n # leading dimensino of Jacobian matrix
+    cdef int ldfjac = n # leading dimensino of Jacobian matrix
     cdef int iflag = 1 # Calculate functions at x
     get_ne(&m)
     get_nx(&n)
-    ldj = n
-    func(&m, &n, &x_arr[0], &fvec[0], &fjac[0,0], &ldj, &iflag)
+    ldfjac = n
+    func(&m, &n, &x_arr[0], &fvec[0], &fjac[0,0], &ldfjac, &iflag)
     return fvec
 
 
@@ -78,8 +87,8 @@ def jac(double [:] x, double [:] params):
         np.empty(m)
     cdef cnp.ndarray[cnp.float64_t, ndim=2, mode='fortran'] fjac = \
         np.empty((m,n), order='F')
-    cdef int ldj = n # leading dimensino of Jacobian matrix
+    cdef int ldfjac = n # leading dimension of Jacobian matrix
     cdef int iflag = 2 # Calculate Jacobian at x
-    ldj = n
-    func(&m, &n, &x_arr[0], &fvec[0], &fjac[0,0], &ldj, &iflag)
+    ldfjac = n
+    func(&m, &n, &x_arr[0], &fvec[0], &fjac[0,0], &ldfjac, &iflag)
     return fjac

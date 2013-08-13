@@ -17,12 +17,20 @@ contains
     real(c_double), intent(inout) :: x(NX+NP)
     real(c_double), intent(in) :: tol ! relative error in sum of squares or in residuals
     integer(c_int), intent(inout) :: info ! 0 improper input, 1, 2, 3 (success), others error
-    integer, parameter :: lwa = 5*NX+NE
+    integer, parameter :: lwa = (5*NX+NE)*2 ! TODO: the last factor two seems to be need not to segault?
+    integer, parameter :: ldfjac = NE ! leading dimension of jacobian
+    integer, parameter :: m = NE
+    integer, parameter :: n = NX
     integer :: ipvt(NX), wa(lwa)
-    real(c_double) :: fvec(NX), fjac(NE, NX)
+    real(c_double) :: fvec(NE), fjac(NE, NX)
+    wa = 0
     NFEV = 0
     NJEV = 0
-    call lmder1(func, NE, NX, x, fvec, fjac, NX, tol, info, ipvt, wa, lwa)
+    write(6,*) 'about to call lmder1!'
+    flush(6)
+    call lmder1(func, NE, NX, x, fvec, fjac, ldfjac, tol, info, ipvt, wa, lwa)
+    write(6,*) 'back from lmder1!'
+    flush(6)
   end subroutine lm_solve
 
   subroutine func(m, n, x, fvec, fjac, ldfjac, iflag) bind(c)

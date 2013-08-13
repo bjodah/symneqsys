@@ -21,6 +21,9 @@ class NEQSys(object):
 
     @property
     def jac(self):
+        """
+        Jacobian matrix
+        """
         return sympy.Matrix(
             len(self.exprs), len(self.v),
             lambda r, c: self.exprs[r].diff(self.v[c]))

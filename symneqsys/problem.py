@@ -5,7 +5,7 @@ import numpy as np
 class Problem(object):
     """
     Non-linear Root Finding Problem class
-    Can perform variable substitution and scaling for
+    Can perform variable substitution (could be simple scaling) for
     achieving better condition of e.g. Jacboian matrix
     during the numerical treatment of the problem.
 
@@ -14,8 +14,7 @@ class Problem(object):
     """
 
     def __init__(self, neqsys, params=None,
-                 guess=None, solver=None, inv_trnsfm=None,
-                 scaling=None):
+                 guess=None, solver=None, inv_trnsfm=None):
         """
         guess 1.0 for all v if None
         """
@@ -44,7 +43,6 @@ class Problem(object):
         self.solver.set_neqsys(self._neqsys)
 
         self._inv_trnsfm = inv_trnsfm
-        self._scaling = scaling
 
         # Check for singlarity if number of expressions
         # does not exceed the number of variables
@@ -64,38 +62,25 @@ class Problem(object):
     @property
     def solution(self):
         """
-        Abstracts away variable substitutions and scaling used
+        Abstracts away variable substitutions used
         in the numerical treatment of the problem
 
         Returns an OrderedDict of the final values.
         """
         if self._inv_trnsfm:
             raise NotImplementedError
-        else:
-            return self._rescale(OrderedDict(zip(
-                self._neqsys.v, self.solver.num_result.x)))
-
-
-    def _rescale(self, values):
-        if self._scaling:
-            return OrderedDict((k, v*self._scaling[k]) for k, v in \
-                                values.items())
-        else:
-            return values
+        return OrderedDict(zip(
+            self._neqsys.v, self.solver.num_result.x))
 
 
     def use_internal_trnsfm(self, trnsfm, inv_trnsfm):
-        if self._scaling: raise RuntimeError('Scale after transform.')
-        pass
-
-
-    def use_internal_scaling(self, scaling):
         pass
 
 
     @property
     def x0_array(self):
         return np.array([self.guess[k] for k in self._neqsys.v], dtype=np.float64)
+
 
     @property
     def params_array(self):
