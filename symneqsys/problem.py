@@ -24,7 +24,7 @@ class Problem(object):
 
         # store params (default 1.0)
         if params == None:
-            self.params = {k: 1.0 for k in self._neqsys.v}
+            self.params = {k: 1.0 for k in self._neqsys.params}
         else:
             self.params = self._neqsys.symbify_dictkeys(params)
             assert all([self._neqsys[k] in self._neqsys.params for \

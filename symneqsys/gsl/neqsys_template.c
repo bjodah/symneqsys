@@ -65,9 +65,9 @@ jac (const gsl_vector * x, void *params, gsl_matrix * J)
 
 
 int
-fdf (const gsl_vector * x, void *params, gsl_vector *f, gsl_matrix * J)
+fdf (const gsl_vector * x, void * params, gsl_vector * f, gsl_matrix * J)
 {
-  const double *k = (double *) params;
+  const double * const k = (double *) params;
   const double * const y = (double *) x->data;
 
   /*
@@ -84,14 +84,12 @@ fdf (const gsl_vector * x, void *params, gsl_vector *f, gsl_matrix * J)
   gsl_vector_set(f, ${i}, ${expr});
 % endfor
 
-
   /*
     Populate the NY times NY Jacobian matrix
    */
 % for i, expr in enumerate(fj_jac_new_code):
   gsl_matrix_set (J, ${i // NX}, ${i % NX}, ${expr});
 % endfor
-
   
   NFJEV++;
   return GSL_SUCCESS;

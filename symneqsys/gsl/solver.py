@@ -48,9 +48,11 @@ class GSL_Code(NEQSys_Code, C_Code):
         self._library_dirs.append(cython_gsl.get_library_dir())
 
 
-
 class GSL_Solver(BinarySolver):
-
+    """
+    Used to solve systems with equal number of expressions
+    as variables.
+    """
     CodeClass = GSL_Code
 
     solve_args = {'fdfsolver_type': (
@@ -62,3 +64,11 @@ class GSL_Solver(BinarySolver):
         self.num_result = self.binary_mod.solve(
             x0, params, self.abstol,
             itermax=itermax, **kwargs)
+
+
+class GSL_Multifit_Nlin_Solver(BinarySolver):
+    pass
+
+
+class GSL_MultiRoot_Solver(BinarySolver):
+    pass

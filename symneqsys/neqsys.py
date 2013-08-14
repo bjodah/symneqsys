@@ -90,9 +90,15 @@ class SimpleNEQSys(NEQSys):
         if self.var_tokens:
             self.v = [self.mk_symb(t) for t in \
                       self.var_tokens.split()]
+        else:
+            self.v = []
+
         if self.param_tokens:
             self.params = [self.mk_symb(t) for t in \
                            self.param_tokens.split()]
+        else:
+            self.params = []
+
 
     def mk_symb(self, token):
         return sympy.Symbol(token, real=self.real)

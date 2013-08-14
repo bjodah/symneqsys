@@ -1,6 +1,9 @@
 ! Template (mako) for generating Fortran 90 code to wrapped.
 ! MINPACK calling routine, wrapped by neqsys_wrapper.pyx
 
+! NOTE: If the F77 version seems complex, look at:
+! http://people.sc.fsu.edu/~jburkardt/f_src/minpack/minpack.f90
+
 module neqsys
   use iso_c_binding, only: c_double, c_int
   implicit none

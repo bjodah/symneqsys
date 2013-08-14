@@ -4,7 +4,7 @@ cimport numpy as cnp
 
 from symneqsys.codeexport import Result
 
-cdef extern int _solve(
+cdef extern int multiroot_solve(
     size_t dim, double * x, void * params, double atol,
     int fdfsolver_type_idx, int itermax, int print_,
     int store_intermediate, double * intermediate, int * iter,

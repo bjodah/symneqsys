@@ -11,7 +11,6 @@ Parameters taken from GNU GSL Manual
 from sympy import exp as e
 
 from symneqsys import SimpleNEQSys, Problem
-#from symneqsys.solver import SciPy_Solver
 from symneqsys.gsl import GSL_Solver
 
 class PowellSys(SimpleNEQSys):
