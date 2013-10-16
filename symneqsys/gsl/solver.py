@@ -12,14 +12,14 @@ from symneqsys.codeexport import BinarySolver, NEQSys_Code
 
 class GSL_Code(NEQSys_Code, C_Code):
 
-    _copy_files = ['solvers.c',
+    _copy_files = ['_solvers.c',
                    'prebuilt/solvers_wrapper.o',
-                   'prebuilt/solvers.o',
-                   'solvers.h', 'neqsys.h', 'Makefile',
+                   'prebuilt/_solvers.o',
+                   '_solvers.h', 'neqsys.h', 'Makefile',
                    'prebuilt/'+CCompilerRunner.metadata_filename, # <--- Make sure we compile with same compiler
                ]
 
-    _obj_files = ['neqsys.o', 'solvers.o', 'solvers_wrapper.o']
+    _obj_files = ['neqsys.o', '_solvers.o', 'solvers_wrapper.o']
 
     _templates = ['neqsys_template.c',
                  'main_ex_template.c',

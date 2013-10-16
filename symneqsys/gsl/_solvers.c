@@ -97,7 +97,7 @@ int
 solve_multifit(size_t ne, size_t nx, double * x, void * params, 
 	       double atol, double rtol, int multifit_fdfsolver_type_idx,
 	       int itermax, int criterion, int print_, int store_intermediate, 
-	       double * intermediate, int * iter, int * nfev_, int * nfjev_)
+	       double * intermediate, int * iter, int * nfev_, int * njev_, int * nfjev_)
 {
   // criterion:
   //     1:  gsl_multifit_test_delta
@@ -112,6 +112,7 @@ solve_multifit(size_t ne, size_t nx, double * x, void * params,
   gsl_block xblk = {nx, x}; // we already have a contigous x-array passed into function
   gsl_vector xvec = {nx, 1, x, &xblk, 0};
   gsl_multifit_fdfsolver_set(s, &f, &xvec);
+  gsl_vector * g = NULL;
 
   *iter = 0;
   // (re)set globals in neqsys.h
@@ -150,7 +151,7 @@ solve_multifit(size_t ne, size_t nx, double * x, void * params,
       case 1:
 	status = gsl_multifit_test_delta(s->dx, s->x, atol, rtol);
       default:
-	gsl_vector * g = gsl_vector_alloc(ne);
+	g = gsl_vector_alloc(ne);
 	gsl_multifit_gradient(s->J, s->f, g);
 	int gradient_status = gsl_multifit_test_gradient(g, atol);
 	switch(criterion){
@@ -163,6 +164,7 @@ solve_multifit(size_t ne, size_t nx, double * x, void * params,
 	      status = delta_status;
 	  }
 	}
+      }
     }
   while (status == GSL_CONTINUE && *iter < itermax-1);
 
@@ -207,6 +209,9 @@ print_multifit_state (int iter, gsl_multifit_fdfsolver * s, size_t nx, size_t ne
   printf("\n");
 }
 
+
+// The functions below are convenience functions when we have aldreay allocated
+// space for the data.
 
 void c_func(size_t nx, double * x, double * params, double * out){
   gsl_block xblk = {nx, x}; // we already have a contigous x-array passed into function

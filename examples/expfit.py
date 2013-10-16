@@ -19,6 +19,7 @@ import numpy as np
 from symneqsys import SimpleNEQSys, Problem
 from symneqsys.gsl import GSL_Solver
 
+
 class ExpbSys(SimpleNEQSys):
     """
     Fits data to exponential curve
