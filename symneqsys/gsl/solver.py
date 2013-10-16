@@ -62,7 +62,7 @@ class GSL_Solver(BinarySolver):
 
     def run(self, x0, params, itermax=100, **kwargs):
         self.num_result = self.binary_mod.solve(
-            x0, params, self.abstol,
+            x0, params, atol=self.abstol,
             itermax=itermax, **kwargs)
 
 

@@ -27,8 +27,9 @@ def solve(double [::1] x0, double [::1] params, double atol,
         np.empty(x0.shape[0]*itermax, order='C')
     cdef int status
     cdef int iter_, nfev, njev, nfjev
+    cdef double * params_pointer = &params[0] if len(params) > 0 else NULL
     start = time.time()
-    status = solve_multiroot(x0.shape[0], &x0[0], &params[0], atol,
+    status = solve_multiroot(x0.shape[0], &x0[0], params_pointer, atol,
                              multiroot_solver_types.index(solver_type), itermax, 0, 1,
                              <double *>intermediate.data, &iter_, &nfev, &njev, &nfjev)
     end = time.time()
@@ -50,12 +51,14 @@ def solve(double [::1] x0, double [::1] params, double atol,
 
 def residuals(double [::1] x, double [::1] params):
     cdef cnp.ndarray[cnp.float64_t, ndim=1] out_arr = np.empty(x.shape[0], order='C')
+    cdef double * params_pointer = &params[0] if len(params) > 0 else NULL
 
-    c_func(x.shape[0], &x[0], &params[0], &out_arr[0])
+    c_func(x.shape[0], &x[0], params_pointer, &out_arr[0])
     return out_arr
 
 
 def jac(double [::1] x, double [::1] params):
     cdef cnp.ndarray[cnp.float64_t, ndim=1] out_arr = np.empty(x.shape[0]**2, order='C')
-    c_jac(x.shape[0], &x[0], &params[0], &out_arr[0])
+    cdef double * params_pointer = &params[0] if len(params) > 0 else NULL
+    c_jac(x.shape[0], &x[0], params_pointer, &out_arr[0])
     return out_arr.reshape((x.shape[0], x.shape[0]))

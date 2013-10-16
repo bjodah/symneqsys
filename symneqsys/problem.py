@@ -96,6 +96,9 @@ class Problem(object):
 
         Returns success (True/False)
         """
+        for attr in ('abstol', 'reltol'):
+            if attr in kwargs:
+                setattr(self, attr, kwargs.pop('abstol'))
         self.solver.run(self.x0_array, self.params_array, itermax, **kwargs)
         return self.solver.num_result.success
 
