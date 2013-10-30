@@ -19,35 +19,28 @@ import numpy as np
 from symneqsys import SimpleNEQSys, Problem
 from symneqsys.gsl import GSL_Solver
 
-
 class ExpbSys(SimpleNEQSys):
     """
     Fits data to exponential curve
     """
 
-    # TODO: Add support for loop construction in codeexport!!!
-
-    # param_tokens = ''
+    # TODO: Add support for loop construction in codeexport.
+    param_tokens = 'x[i] y[i] s[i]'
     var_tokens = 'A l b'
-
-    def __init__(self, xdata, ydata, sigma=None):
-        assert len(xdata) == len(ydata)
-        self._xdata = xdata
-        self._ydata = ydata
-        self._sigma = sigma or np.ones(xdata.shape)
-        super(ExpbSys, self).__init__()
 
     @property
     def exprs(self):
         f = lambda x: self['A']*sympy.exp(-self['l']*x)+self['b']
-        return [(f(x)-y)/s for x,y,s in zip(self._xdata, self._ydata, self._sigma)]
+        x,y,s = self['x','y','s']
+        return [(f(x) - y)/s]
 
 
 def main(Sys):
+    sys = Sys()
     x = np.linspace(0,39,40)
     y = 1.0*5*np.exp(-0.1*x)+np.random.normal(scale=0.1,size=x.size)
-    sys = Sys(x,y)
-    problem = Problem(sys, solver=GSL_Solver(save_temp=True, tempdir='./build/expfit'))
+    problem = Problem(sys, {'x[i]': x, 'y[i]': y},
+                      solver=GSL_Solver(save_temp=True, tempdir='./build/expfit'))
     success = problem.solve()
     if success:
         print("Success:")

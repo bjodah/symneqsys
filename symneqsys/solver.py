@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 from functools import partial
@@ -11,6 +10,7 @@ class Solver(object):
 
     abstol = 1e-6
     reltol = 1e-6
+    logger = None
 
     solve_args = {} # speical keyword arguments to run in subclasses
 

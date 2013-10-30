@@ -12,9 +12,9 @@ class NEQSys_Code(Generic_Code):
     tempdir_basename = "_symneqsys_compile"
 
 
-    def __init__(self, neqsys, **kwargs):
+    def __init__(self, neqsys, *args, **kwargs):
         self._neqsys = neqsys
-        super(NEQSys_Code, self).__init__(**kwargs)
+        super(NEQSys_Code, self).__init__(*args, **kwargs)
 
 
     def variables(self):

@@ -56,9 +56,7 @@ class GSL_Solver(BinarySolver):
     CodeClass = GSL_Code
 
     solve_args = {'fdfsolver_type': (
-        'newton', 'gnewton', 'hybridj', 'hybridsj'),
-                  }
-
+        'newton', 'gnewton', 'hybridj', 'hybridsj'),}
 
     def run(self, x0, params, itermax=100, **kwargs):
         self.num_result = self.binary_mod.solve(
