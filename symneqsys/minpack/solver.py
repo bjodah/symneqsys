@@ -7,17 +7,17 @@ from symneqsys.codeexport import BinarySolver, NEQSys_Code
 
 class MINPACK_Code(NEQSys_Code, F90_Code):
 
-    _copy_files = ['prebuilt/'+x[:-1]+'o' for x in f_sources] +\
+    copy_files = ['prebuilt/'+x[:-1]+'o' for x in f_sources] +\
                  ['prebuilt/neqsys_wrapper.o']
 
-    _obj_files = [x[:-1]+'o' for x in f_sources] +\
+    obj_files = [x[:-1]+'o' for x in f_sources] +\
                  ['neqsys.o', 'neqsys_wrapper.o']
 
-    _templates = ['neqsys_template.f90']
+    templates = ['neqsys_template.f90']
 
-    _source_files = ['neqsys.f90']
+    source_files = ['neqsys.f90']
 
-    _so_file = 'neqsys_wrapper.so'
+    so_file = 'neqsys_wrapper.so'
 
     extension_name = 'neqsys_wrapper'
 
