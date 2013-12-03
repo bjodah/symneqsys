@@ -1,6 +1,6 @@
 from itertools import chain
 
-from pycompilation.codeexport import Generic_Code, DummyGroup
+from pycompilation.codeexport import Generic_Code, DummyGroup, ArrayifyGroup
 from symneqsys.solver import Solver
 
 class NEQSys_Code(Generic_Code):
@@ -23,21 +23,26 @@ class NEQSys_Code(Generic_Code):
         and matrices.
         """
         dummy_groups = (
-            DummyGroup('vdummies', self._neqsys.v, self.v_tok, self.v_offset),
-            DummyGroup('paramdummies', self._neqsys.params, self.param_tok, self.param_offset),
+            DummyGroup('vdummies', self._neqsys.v)
+            DummyGroup('paramdummies', self._neqsys.params),
             )
 
+        arrayify_groups = (
+            ArrayifyGroup('vdummies', self.v_tok, self.v_offset),
+            ArrayifyGroup('paramdummies', self.param_tok, self.param_offset)
+        )
+
         func_cse_defs, func_new_code = self.get_cse_code(
-            self._neqsys.exprs, 'cse', dummy_groups)
+            self._neqsys.exprs, 'cse', dummy_groups, arrayify_groups)
 
         jac_cse_defs, jac_new_code = self.get_cse_code(
             chain.from_iterable(self._neqsys.jac.tolist()),
-            'cse', dummy_groups)
+            'cse', dummy_groups, arrayify_groups)
 
         fj_cse_defs, fj_new_code = self.get_cse_code(
             chain(self._neqsys.exprs, chain.from_iterable(
                 self._neqsys.jac.tolist())), 'cse',
-            dummy_groups)
+            dummy_groups, arrayify_groups)
 
         fj_func_new_code = fj_new_code[:len(self._neqsys.v)]
         fj_jac_new_code = fj_new_code[len(self._neqsys.v):]
