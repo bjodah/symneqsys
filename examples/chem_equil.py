@@ -13,23 +13,7 @@ from sympy import pprint
 from symneqsys import SimpleNEQSys, Problem
 from symneqsys.minpack import MINPACK_Solver
 
-def print_bold(s, fg=('red','black')):
-    """
-    See http://ascii-table.com/ansi-escape-sequences.php
-    """
-    fgi = {
-        'black': 30,
-        'red': 31,
-        'green': 32,
-        'yellow': 33,
-        'blue': 34,
-        'magenta': 35,
-        'cyan': 36,
-        'white': 37,
-        }
-    print('\033[{};1m'.format(fgi[fg[0].lower()])+\
-          s+\
-          '\033[{};0m'.format(fgi[fg[1].lower()]))
+from pycompilation.helpers import term_fmt
 
 
 class ChemSys(SimpleNEQSys):
@@ -38,49 +22,57 @@ class ChemSys(SimpleNEQSys):
                                         in var_tokens.split()])
     @property
     def exprs(self):
-        NH3, NH4p, Hp, OHm, H2O, Kw, Ka = [self[token] for token \
-                                      in ('NH3', 'NH4p', 'Hp', 'OHm', 'H2O', 'Kw', 'Ka')]
+        NH3, NH4p, Hp, OHm, H2O, Kw, Ka = [
+            self[token] for token \
+            in ('NH3', 'NH4p', 'Hp', 'OHm', 'H2O', 'Kw', 'Ka')]
         init = {x: self['init_'+x] for x in self.var_tokens.split()}
-        return [Hp*NH3/NH4p-Ka, # Ammonium ion acid equilibrium
-                Hp*OHm/H2O-Kw, # Water autoprotolysis equilibrium
-                NH3+NH4p-init['NH3']-init['NH4p'], # preservation of N atoms
-                3*NH3+4*NH4p+Hp+OHm+2*H2O-(3*init['NH3']+4*init['NH4p']+\
-                                           init['Hp']+init['OHm']+2*init['H2O']), # prsrv H atoms
-                OHm+H2O-init['OHm']-init['H2O'], # preservation of O atoms
-                NH4p+Hp-OHm-(init['NH4p']+init['Hp']-init['OHm']) # preservation of charge
+        return [
+            Hp*NH3/NH4p-Ka, # NH4+ acid equil
+            Hp*OHm/H2O-Kw, # Water autoprotolysis equilibrium
+            NH3+NH4p-init['NH3']-init['NH4p'], # preserv. of N atoms
+            3*NH3+4*NH4p+Hp+OHm+2*H2O-(
+                3*init['NH3']+4*init['NH4p']+\
+                init['Hp']+init['OHm']+2*init['H2O']), # prsrv H atoms
+            OHm+H2O-init['OHm']-init['H2O'], # preservation of O atoms
+            NH4p+Hp-OHm-(init['NH4p']+init['Hp']-\
+                         init['OHm']) # preservation of charge
         ]
 
 
-def main(Sys):
+def main(Sys, logger=None):
     """
     Solve the example system using Levenberg-Marquardt algorithm
     from Netlib's MINPACK fortran code.
     """
 
     sys = Sys()
-    print_bold('Variables:')
+    print(term_fmt('Variables:'))
     pprint(sys.v)
-    print_bold('Expressions:')
+    print(term_fmt('Expressions:'))
     for expr in sys.exprs:
         pprint(expr)
-    print_bold('Jacobian:')
+    print(term_fmt('Jacobian:'))
     pprint(sys.jac)
-    solver=MINPACK_Solver(save_temp=True, tempdir='./build/chem_equil')
+    solver=MINPACK_Solver(
+        save_temp=True, tempdir='./build/chem_equil',
+        logger=logger)
     solver.abstol = 1e-8
     params = {'Kw':1e-14, 'Ka':10**-9.26}
     init = {'NH3': 1e-3, 'NH4p': 0.0, 'Hp': 1e-7,
             'OHm': 1e-7, 'H2O': 1.0}
     params.update({'init_'+key: val for key,val in init.iteritems()})
-    problem = Problem(sys, params,
-                      guess={key: value if value > 1e-12 else 1e-12 for \
-                             key, value in init.iteritems()},
-                      solver=solver)
+    problem = Problem(
+        sys, params, guess={
+            key: value if value > 1e-12 else 1e-12 for \
+            key, value in init.iteritems()},
+        solver=solver)
     #log_problem = Problem.use_internal_trnsfm(SOMETHING)
     success = problem.solve(itermax=100, solver_type='lm')
 
     if success:
         print("Successfully found a root: "+\
-              ", ".join([key+'='+str(problem.solution[sys[key]]) for key in init.keys()])+\
+              ", ".join([key+'='+str(problem.solution[sys[key]]) for\
+                         key in init.keys()])+\
               ", using Levenberg-Marquard (lm)")
     else:
         print("Root-finding unsuccessful.")
@@ -88,4 +80,7 @@ def main(Sys):
 
 
 if __name__ == '__main__':
-    main(ChemSys)
+    import logging
+    logging.basicConfig(level=logging.INFO)
+    logger = logging.getLogger(__name__)
+    main(ChemSys, logger=logger)

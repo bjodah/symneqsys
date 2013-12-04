@@ -7,8 +7,10 @@ from symneqsys.codeexport import BinarySolver, NEQSys_Code
 
 class MINPACK_Code(NEQSys_Code, F90_Code):
 
-    copy_files = ['prebuilt/'+x[:-1]+'o' for x in f_sources] +\
-                 ['prebuilt/neqsys_wrapper.o']
+    copy_files = [
+        'prebuilt/neqsys_wrapper.o',
+        'prebuilt/'+F90_Code.CompilerRunner.metadata_filename,
+    ] + ['prebuilt/'+x[:-1]+'o' for x in f_sources]
 
     obj_files = [x[:-1]+'o' for x in f_sources] +\
                  ['neqsys.o', 'neqsys_wrapper.o']
@@ -18,6 +20,10 @@ class MINPACK_Code(NEQSys_Code, F90_Code):
     source_files = ['neqsys.f90']
 
     so_file = 'neqsys_wrapper.so'
+
+    compile_kwargs = {
+        'options': ['fast', 'warn', 'pic'],
+    }
 
     extension_name = 'neqsys_wrapper'
 

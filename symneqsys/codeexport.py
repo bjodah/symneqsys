@@ -23,13 +23,13 @@ class NEQSys_Code(Generic_Code):
         and matrices.
         """
         dummy_groups = (
-            DummyGroup('vdummies', self._neqsys.v)
+            DummyGroup('vdummies', self._neqsys.v),
             DummyGroup('paramdummies', self._neqsys.params),
             )
 
         arrayify_groups = (
             ArrayifyGroup('vdummies', self.v_tok, self.v_offset),
-            ArrayifyGroup('paramdummies', self.param_tok, self.param_offset)
+            ArrayifyGroup('paramdummies', self.param_tok, self.param_offset),
         )
 
         func_cse_defs, func_new_code = self.get_cse_code(

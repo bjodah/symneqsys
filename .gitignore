@@ -28,3 +28,7 @@ symneqsys/nleq2/zibconst.f
 symneqsys/nleq2/zibsec.f
 symneqsys/nleq2/zibmon.f
 symneqsys/*/prebuilt/*.*
+symneqsys/*/*.o
+#ifort
+symneqsys/*/*__genmod.mod
+symneqsys/*/*__genmod.f90
