@@ -20,19 +20,19 @@ def main():
     cwd = os.path.join(os.path.abspath(
         os.path.dirname(__file__)),
                        './symneqsys/nleq2/')
-    run_sub_setup(cwd, nleq2_main, logger)
+    run_sub_setup(nleq2_main, 'prebuilt', cwd=cwd, logger=logger)
 
     # GSL
     cwd = os.path.join(os.path.abspath(
         os.path.dirname(__file__)),
                        './symneqsys/gsl/')
-    run_sub_setup(cwd, gsl_main, logger)
+    run_sub_setup(gsl_main, 'prebuilt', cwd=cwd, logger=logger)
 
     # MINPACK
     cwd = os.path.join(os.path.abspath(
         os.path.dirname(__file__)),
                        './symneqsys/minpack/')
-    run_sub_setup(cwd, minpack_main, logger)
+    run_sub_setup(minpack_main, 'prebuilt', cwd=cwd, logger=logger)
 
 
 if __name__ == '__main__':

@@ -24,15 +24,18 @@ f_sources = src_md5.keys()
 
 websrc='http://elib.zib.de/pub/elib/codelib/nleq2/'
 
-def main(cwd, logger):
+def main(dst, **kwargs):
     return
 
-    download_files(websrc, src_md5.keys(), src_md5, cwd)
-    compile_sources(files, destdir='prebuilt/', cwd=cwd,
-                    run_linker=False, options=['pic', 'warn', 'fast'],
-                    metadir='prebuilt/', logger=logger)
-
-    # Cythonize pyx file, and compile to object file
-    pyx2obj(
-        'solvers_wrapper.pyx', 'prebuilt/solvers_wrapper.o',
-        cwd=cwd, logger=logger, only_update=True)
+    download_files(websrc, f_sources, src_md5, kwargs.get('cwd','.'))
+    return [
+        pyx2obj(
+            'solvers_wrapper.pyx',
+            dst,
+            only_update=True,
+            metadir=dst,
+            **kwargs)
+    ] + compile_sources(
+        f_sources, destdir=dst,
+        run_linker=False, options=['pic', 'warn', 'fast'],
+        metadir=dst, **kwargs)
