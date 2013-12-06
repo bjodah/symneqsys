@@ -13,7 +13,7 @@ from sympy import pprint
 from symneqsys import SimpleNEQSys, Problem
 from symneqsys.minpack import MINPACK_Solver
 
-from pycompilation.helpers import term_fmt
+from pycompilation.util import term_fmt
 
 
 class ChemSys(SimpleNEQSys):
