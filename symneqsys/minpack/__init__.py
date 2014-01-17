@@ -1,1 +1,1 @@
-from solver import MINPACK_Solver
+from interface import MINPACK_Solver

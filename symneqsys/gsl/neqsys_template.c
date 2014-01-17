@@ -1,9 +1,10 @@
+// ${_warning_in_the_generated_file_not_to_edit}
+
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_errno.h>
 #include <math.h>
 
 #include "neqsys.h"
-// Python Mako template of C file
 
 // Global counters
 int NFEV = 0;

@@ -1,21 +1,16 @@
-import os
-from pycompilation import pyx2obj, src2obj
+# -*- coding: utf-8 -*-
 
-def main(dst, **kwargs):
-    return [
-        pyx2obj(
-            'solvers_wrapper.pyx',
-            dst,
-            only_update=True, metadir=dst,
-            **kwargs),
-        src2obj(
-            '_solvers.c',
-            objpath=dst,
-            flags=['-DGSL_RANGE_CHECK_OFF', '-DHAVE_INLINE'],
-            options=['pic', 'warn', 'fast'],
-            std='c99',
-            libs=['gsl', 'gslcblas', 'm'],
-            metadir=dst,
-            only_update=True,
-            **kwargs)
-    ]
+from pycompilation._helpers import prebuild_Code
+
+def prebuild(srcdir, destdir, build_temp, **kwargs):
+    from .interface import GSL_Code as Code
+    all_sources = ['solvers.c', '_solvers.pyx']
+    return prebuild_Code(
+        srcdir, destdir, build_temp, Code, all_sources,
+        per_file_kwargs={
+            'solvers.c': {
+                'defmacros': ['GSL_RANGE_CHECK_OFF', 'HAVE_INLINE'],
+                'std': 'c99',
+            }
+        }
+    )

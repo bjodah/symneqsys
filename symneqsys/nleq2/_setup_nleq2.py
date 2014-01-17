@@ -1,5 +1,6 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
+from pycompilation._helpers import prebuild_Code
 
 """
 Precompiles NLEQ2 sources (downloaded when needed) to object files
@@ -7,9 +8,6 @@ for speeding up compilations further ahead.
 
 TODO: add a confirmation step where the user accepts the ZIB license.
 """
-
-from pycompilation import FortranCompilerRunner, pyx2obj, compile_sources
-from pycompilation.util import download_files
 
 src_md5 = {
     'linalg_nleq2.f': '28ed88f1ae7bab8dc850348b5e734881',
@@ -24,18 +22,10 @@ f_sources = src_md5.keys()
 
 websrc='http://elib.zib.de/pub/elib/codelib/nleq2/'
 
-def main(dst, **kwargs):
-    return
 
-    download_files(websrc, f_sources, src_md5, kwargs.get('cwd','.'))
-    return [
-        pyx2obj(
-            'solvers_wrapper.pyx',
-            dst,
-            only_update=True,
-            metadir=dst,
-            **kwargs)
-    ] + compile_sources(
-        f_sources, destdir=dst,
-        run_linker=False, options=['pic', 'warn', 'fast'],
-        metadir=dst, **kwargs)
+def prebuild(srcdir, destdir, build_temp, **kwargs):
+    from .interface import NLEQ2_Code as Code
+    all_sources = f_sources+['_solvers.pyx']
+    return prebuild_Code(
+        srcdir, destdir, build_temp, Code, all_sources,
+        downloads=(websrc, src_md5))

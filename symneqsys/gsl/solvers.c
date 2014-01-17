@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#include "_solvers.h"
+#include "solvers.h"
 #include "neqsys.h"
 
 

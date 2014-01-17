@@ -1,1 +1,1 @@
-from solver import GSL_Solver
+from interface import GSL_Solver

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os
 
 import numpy as np
@@ -13,15 +14,15 @@ from symneqsys.codeexport import BinarySolver, NEQSys_Code
 class GSL_Code(NEQSys_Code, C_Code):
 
     copy_files = [
-        '_solvers.c',
-        'prebuilt/solvers_wrapper.o',
+        'solvers.c',
+        'prebuilt/solvers.o',
         'prebuilt/_solvers.o',
-        '_solvers.h', 'neqsys.h', 'Makefile',
+        'solvers.h', 'neqsys.h', 'Makefile',
         # Make sure we compile with same compiler:
         'prebuilt/'+CCompilerRunner.metadata_filename,
     ]
 
-    obj_files = ['neqsys.o', '_solvers.o', 'solvers_wrapper.o']
+    obj_files = ['neqsys.o', 'solvers.o', '_solvers.o']
 
     templates = ['neqsys_template.c',
                  'main_ex_template.c',
@@ -29,9 +30,9 @@ class GSL_Code(NEQSys_Code, C_Code):
 
     source_files = ['neqsys.c'] # other are precompiled
 
-    so_file = 'solvers_wrapper.so'
+    so_file = '_solvers.so'
 
-    extension_name = 'solvers_wrapper'
+    extension_name = 'solvers'
 
     compile_kwargs = {
         'std': 'c99',

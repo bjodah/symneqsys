@@ -8,24 +8,24 @@ from symneqsys.codeexport import BinarySolver, NEQSys_Code
 class MINPACK_Code(NEQSys_Code, F90_Code):
 
     copy_files = [
-        'prebuilt/neqsys_wrapper.o',
+        'prebuilt/_solvers.o',
         'prebuilt/'+F90_Code.CompilerRunner.metadata_filename,
     ] + ['prebuilt/'+x[:-1]+'o' for x in f_sources]
 
     obj_files = [x[:-1]+'o' for x in f_sources] +\
-                 ['neqsys.o', 'neqsys_wrapper.o']
+                 ['solvers.o', '_solvers.o']
 
-    templates = ['neqsys_template.f90']
+    templates = ['solvers_template.f90']
 
-    source_files = ['neqsys.f90']
+    source_files = ['solvers.f90']
 
-    so_file = 'neqsys_wrapper.so'
+    so_file = '_solvers.so'
 
     compile_kwargs = {
         'options': ['fast', 'warn', 'pic'],
     }
 
-    extension_name = 'neqsys_wrapper'
+    extension_name = '_solvers'
 
     v_tok = 'x'
     v_offset = 1

@@ -1,6 +1,8 @@
+! ${_warning_in_the_generated_file_not_to_edit}
+<%doc>
 ! Template for generating Fortran 90 code to wrapped using Cython for calling nleq2
 ! from python. Based on main_nleq2.f example provided with NLEQ2
-! mako template variables: 
+</%doc>
 
 module neqsys
   use types, only: dp

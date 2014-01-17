@@ -1,14 +1,13 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from pycompilation import FortranCompilerRunner, pyx2obj, compile_sources
-from pycompilation.util import download_files
+from pycompilation._helpers import prebuild_Code
 
 """
 Precompiles Levenberg Marquardt sources of netlib/minpack (downloaded
 when needed) to object files for speeding up compilations further ahead.
 """
 
+websrc='http://www.netlib.org/minpack/'
 src_md5 = {
     'dpmpar.f': '290b5ab2f116903e49c8f542d7afbac6',
     'enorm.f': 'a63a84008c57c577e03b7d892b964bd5',
@@ -21,14 +20,9 @@ src_md5 = {
 
 f_sources = src_md5.keys()
 
-def main(dst, **kwargs):
-    websrc='http://www.netlib.org/minpack/'
-    download_files(websrc, f_sources, src_md5, kwargs.get('cwd','.'))
-    return [
-        pyx2obj('neqsys_wrapper.pyx', dst, only_update=True,
-                metadir=dst, **kwargs)
-    ]+ compile_sources(
-        f_sources, destdir=dst,run_linker=False,
-        options=['pic', 'warn', 'fast'],
-        #preferred_vendor='gnu',
-        metadir=dst, **kwargs)
+def prebuild(srcdir, destdir, build_temp, **kwargs):
+    from .interface import MINPACK_Code as Code
+    all_sources = f_sources+['_solvers.pyx']
+    return prebuild_Code(
+        srcdir, destdir, build_temp, Code, all_sources,
+        downloads=(websrc, src_md5))

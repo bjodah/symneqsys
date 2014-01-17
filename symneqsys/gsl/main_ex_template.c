@@ -1,3 +1,5 @@
+// ${_warning_in_the_generated_file_not_to_edit}
+
 #include <stdlib.h>
 #include "solvers.h"
 
