@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from pycompilation._helpers import prebuild_Code
+from pycompilation.codeexport import prebuild_Code
 
 def prebuild(srcdir, destdir, build_temp, **kwargs):
     from .interface import GSL_Code as Code
@@ -12,5 +12,6 @@ def prebuild(srcdir, destdir, build_temp, **kwargs):
                 'defmacros': ['GSL_RANGE_CHECK_OFF', 'HAVE_INLINE'],
                 'std': 'c99',
             }
-        }
+        },
+        **kwargs
     )

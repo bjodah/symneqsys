@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from pycompilation._helpers import prebuild_Code
+from pycompilation.codeexport import prebuild_Code
 
 """
 Precompiles NLEQ2 sources (downloaded when needed) to object files
@@ -28,4 +28,4 @@ def prebuild(srcdir, destdir, build_temp, **kwargs):
     all_sources = f_sources+['_solvers.pyx']
     return prebuild_Code(
         srcdir, destdir, build_temp, Code, all_sources,
-        downloads=(websrc, src_md5))
+        downloads=(websrc, src_md5), **kwargs)
