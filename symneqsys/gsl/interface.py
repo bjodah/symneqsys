@@ -13,7 +13,7 @@ from symneqsys.codeexport import BinarySolver, NEQSys_Code
 
 class GSL_Code(NEQSys_Code, C_Code):
 
-    copy_files = [
+    build_files = [
         'solvers.c',
         'prebuilt/solvers.o',
         'prebuilt/_solvers.o',
@@ -37,6 +37,7 @@ class GSL_Code(NEQSys_Code, C_Code):
     compile_kwargs = {
         'std': 'c99',
         'options': ['fast', 'warn', 'pic'],
+        'defmacros': ['GSL_RANGE_CHECK_OFF', 'HAVE_INLINE'],
     }
 
     v_tok = 'y' # see neqsys_template.c

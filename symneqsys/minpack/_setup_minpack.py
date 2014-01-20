@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from pycompilation.codeexport import prebuild_Code
+import os
+from pycompilation.codeexport import make_CleverExtension_for_prebuilding_Code
+
 
 """
 Precompiles Levenberg Marquardt sources of netlib/minpack (downloaded
@@ -20,9 +22,12 @@ src_md5 = {
 
 f_sources = src_md5.keys()
 
-def prebuild(srcdir, destdir, build_temp, **kwargs):
-    from .interface import MINPACK_Code as Code
-    all_sources = f_sources+['_solvers.pyx']
-    return prebuild_Code(
-        srcdir, destdir, build_temp, Code, all_sources,
-        downloads=(websrc, src_md5), **kwargs)
+def get_minpack_clever_ext(basename):
+    from .interface import MINPACK_Code
+    return make_CleverExtension_for_prebuilding_Code(
+        basename+'.minpack._solvers', MINPACK_Code,
+        f_sources+['_solvers.pyx'],
+        srcdir=os.path.join(basename, 'minpack'),
+        downloads=(websrc, src_md5),
+        logger=True
+    )

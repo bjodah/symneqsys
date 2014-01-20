@@ -2,9 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import sys
-import os
-import shutil
-import tempfile
+from distutils.core import setup
 
 pkg_name = 'symneqsys'
 
@@ -31,64 +29,30 @@ if '--help'in sys.argv[1:] or sys.argv[1] in (
         '--help-commands', 'egg_info', 'clean', '--version'):
     cmdclass_ = {}
     sub_pkgs = []
+    ext_modules=ext_modules_,
 else:
-
-    from pycompilation.util import make_dirs
-    from symneqsys.nleq2._setup_nleq2 import prebuild as nleq2_prebuild
-    from symneqsys.gsl._setup_gsl import prebuild as gsl_prebuild
-    from symneqsys.minpack._setup_minpack import prebuild as minpack_prebuild
-
-    sub_folders = ['nleq2', 'gsl', 'minpack']
-    prebuilds = zip(sub_folders,
-                [nleq2_prebuild, gsl_prebuild, minpack_prebuild])
-    sub_pkgs = ['symneqsys.' + x for x in sub_folders]
-
-    def run_prebuilds(build_lib, build_temp):
-        """
-        Precompile some sources to object files
-        and store in `prebuilt/` directories for
-        speeding up meta-programming compilations.
-        """
-        import logging
-        logging.basicConfig(level=logging.DEBUG)
-        logger = logging.getLogger(__name__)
-
-        for name, cb in prebuilds:
-            destdir = os.path.join(build_lib, pkg_name, name)
-            prebuilt_destdir = os.path.join(destdir, 'prebuilt')
-            if not os.path.exists(prebuilt_destdir): make_dirs(prebuilt_destdir)
-            srcdir = os.path.join(os.path.dirname(__file__), pkg_name, name)
-            cb(srcdir, destdir, build_temp, logger=logger)
-
-    from distutils.command.build_py import build_py as _build_py
-    from distutils.core import setup
-
-    class build_py(_build_py):
-        """Specialized Python source builder."""
-        def run(self):
-            if not self.dry_run:
-                build_temp = tempfile.mkdtemp('build_temp')
-                try:
-                    run_prebuilds(self.build_lib, build_temp)
-                finally:
-                    shutil.rmtree(build_temp)
-            _build_py.run(self)
-
-    cmdclass_ = {'build_py': build_py}
+    from pycompilation.dist import clever_build_ext
+    from symneqsys.nleq2._setup_nleq2 import get_nleq2_clever_ext
+    from symneqsys.gsl._setup_gsl import get_gsl_clever_ext
+    from symneqsys.minpack._setup_minpack import get_minpack_clever_ext
+    ext_modules_ = [
+        get_nleq2_clever_ext(pkg_name),
+        get_gsl_clever_ext(pkg_name),
+        get_minpack_clever_ext(pkg_name),
+    ]
+    cmdclass_ = {'build_ext': clever_build_ext}
 
 setup(
     name=pkg_name,
     version=version_,
     author='Björn Dahlgren',
     author_email='bjodah@DELETEMEgmail.com',
-    description='Convenience functions for use with sympy.',
+    description='Solve non-linear systems of equation by combining CAS and conventional solvers.',
     license = "BSD",
     url='https://github.com/bjodah/'+pkg_name,
     download_url='https://github.com/bjodah/'+pkg_name+'/archive/v'+version_+'.tar.gz',
-    packages=['symneqsys'] + sub_pkgs,
-    # package_data={pkg_name: [
-    #     'symneqsys/'
-    # ]}
+    packages=['symneqsys'],
+    ext_modules=ext_modules_,
     cmdclass = cmdclass_,
     classifiers = classifiers
 )
