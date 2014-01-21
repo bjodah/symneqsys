@@ -28,7 +28,6 @@ classifiers = [
 if '--help'in sys.argv[1:] or sys.argv[1] in (
         '--help-commands', 'egg_info', 'clean', '--version'):
     cmdclass_ = {}
-    sub_pkgs = []
     ext_modules=ext_modules_,
 else:
     from pycompilation.dist import clever_build_ext

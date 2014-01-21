@@ -38,6 +38,9 @@ class GSL_Code(NEQSys_Code, C_Code):
         'std': 'c99',
         'options': ['fast', 'warn', 'pic'],
         'defmacros': ['GSL_RANGE_CHECK_OFF', 'HAVE_INLINE'],
+        'libs': cython_gsl.get_libraries(),
+        'inc_dirs': [cython_gsl.get_include(), cython_gsl.get_cython_include_dir()],
+        'lib_dirs': [cython_gsl.get_library_dir()]
     }
 
     v_tok = 'y' # see neqsys_template.c
@@ -50,10 +53,6 @@ class GSL_Code(NEQSys_Code, C_Code):
     def __init__(self, *args, **kwargs):
         self._basedir = os.path.dirname(__file__)
         super(GSL_Code, self).__init__(*args, **kwargs)
-        self.inc_dirs.append(cython_gsl.get_include())
-        self.inc_dirs.append(cython_gsl.get_cython_include_dir())
-        self.libs.extend(cython_gsl.get_libraries())
-        self.lib_dirs.append(cython_gsl.get_library_dir())
 
 
 class GSL_Solver(BinarySolver):
