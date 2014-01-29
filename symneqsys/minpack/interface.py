@@ -9,7 +9,6 @@ class MINPACK_Code(NEQSys_Code, F90_Code):
 
     build_files = [
         'prebuilt/_solvers.o',
-        'prebuilt/'+F90_Code.CompilerRunner.metadata_filename,
     ] + ['prebuilt/'+x[:-1]+'o' for x in f_sources]
 
     obj_files = [x[:-1]+'o' for x in f_sources] +\

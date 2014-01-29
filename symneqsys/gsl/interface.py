@@ -18,8 +18,6 @@ class GSL_Code(NEQSys_Code, C_Code):
         'prebuilt/solvers.o',
         'prebuilt/_solvers.o',
         'solvers.h', 'neqsys.h', 'Makefile',
-        # Make sure we compile with same compiler:
-        'prebuilt/'+CCompilerRunner.metadata_filename,
     ]
 
     obj_files = ['neqsys.o', 'solvers.o', '_solvers.o']
