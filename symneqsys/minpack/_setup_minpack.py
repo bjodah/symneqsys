@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
-from pycompilation.codeexport import make_CleverExtension_for_prebuilding_Code
+from pycodeexport.codeexport import make_PCEExtension_for_prebuilding_Code
 
 
 """
@@ -22,9 +22,9 @@ src_md5 = {
 
 f_sources = src_md5.keys()
 
-def get_minpack_clever_ext(basename):
+def get_minpack_pce_ext(basename):
     from .interface import MINPACK_Code
-    return make_CleverExtension_for_prebuilding_Code(
+    return make_PCEExtension_for_prebuilding_Code(
         basename+'.minpack._solvers', MINPACK_Code,
         f_sources+['_solvers.pyx'],
         srcdir=os.path.join(basename, 'minpack'),

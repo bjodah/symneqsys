@@ -1,6 +1,6 @@
 import os
 
-from pycompilation.codeexport import F90_Code
+from pycodeexport.codeexport import F90_Code
 
 from symneqsys.minpack._setup_minpack import f_sources
 from symneqsys.codeexport import BinarySolver, NEQSys_Code
@@ -35,7 +35,7 @@ class MINPACK_Code(NEQSys_Code, F90_Code):
         return 1 + len(self._neqsys.v)
 
     def __init__(self, *args, **kwargs):
-        self._basedir = os.path.dirname(__file__)
+        self.basedir = os.path.dirname(__file__)
         super(MINPACK_Code, self).__init__(*args, **kwargs)
 
 

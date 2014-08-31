@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from pycompilation.codeexport import C_Code
+from pycodeexport.codeexport import C_Code
 from symneqsys.codeexport import BinarySolver, NEQSys_Code
 
 class NLEQ2_Code(NEQSys_Code):

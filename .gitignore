@@ -11,6 +11,7 @@ TAGS
 */\#*\#
 */*.so
 build/
+.cache/
 */build
 */tmp
 */*/tmp

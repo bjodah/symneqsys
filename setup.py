@@ -30,16 +30,16 @@ if '--help'in sys.argv[1:] or sys.argv[1] in (
     cmdclass_ = {}
     ext_modules=ext_modules_,
 else:
-    from pycompilation.dist import clever_build_ext
-    from symneqsys.nleq2._setup_nleq2 import get_nleq2_clever_ext
-    from symneqsys.gsl._setup_gsl import get_gsl_clever_ext
-    from symneqsys.minpack._setup_minpack import get_minpack_clever_ext
+    from pycodeexport import pce_build_ext
+    from symneqsys.nleq2._setup_nleq2 import get_nleq2_pce_ext
+    from symneqsys.gsl._setup_gsl import get_gsl_pce_ext
+    from symneqsys.minpack._setup_minpack import get_minpack_pce_ext
     ext_modules_ = [
-        get_nleq2_clever_ext(pkg_name),
-        get_gsl_clever_ext(pkg_name),
-        get_minpack_clever_ext(pkg_name),
+        get_nleq2_pce_ext(pkg_name),
+        get_gsl_pce_ext(pkg_name),
+        get_minpack_pce_ext(pkg_name),
     ]
-    cmdclass_ = {'build_ext': clever_build_ext}
+    cmdclass_ = {'build_ext': pce_build_ext}
 
 setup(
     name=pkg_name,

@@ -1,6 +1,6 @@
 from itertools import chain
 
-from pycompilation.codeexport import Generic_Code, DummyGroup, ArrayifyGroup
+from pycodeexport.codeexport import Generic_Code, DummyGroup, ArrayifyGroup
 from symneqsys.solver import Solver
 
 class NEQSys_Code(Generic_Code):

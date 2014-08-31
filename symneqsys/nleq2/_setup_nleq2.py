@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
-from pycompilation.codeexport import make_CleverExtension_for_prebuilding_Code
+from pycodeexport.codeexport import make_PCEExtension_for_prebuilding_Code
 
 """
 Precompiles NLEQ2 sources (downloaded when needed) to object files
@@ -23,9 +23,9 @@ f_sources = src_md5.keys()
 
 websrc='http://elib.zib.de/pub/elib/codelib/nleq2/'
 
-def get_nleq2_clever_ext(basename):
+def get_nleq2_pce_ext(basename):
     from .interface import NLEQ2_Code
-    return make_CleverExtension_for_prebuilding_Code(
+    return make_PCEExtension_for_prebuilding_Code(
         basename+'.nleq2._solvers', NLEQ2_Code,
         f_sources+['_solvers.pyx'],
         srcdir=os.path.join(basename, 'nleq2'),

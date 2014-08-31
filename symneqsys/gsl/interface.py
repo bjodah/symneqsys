@@ -4,8 +4,8 @@ import os
 import numpy as np
 import cython_gsl
 
-from pycompilation import CCompilerRunner
-from pycompilation.codeexport import C_Code
+from pycompilation.compilation import CCompilerRunner
+from pycodeexport.codeexport import C_Code
 
 
 from symneqsys.codeexport import BinarySolver, NEQSys_Code
@@ -49,7 +49,7 @@ class GSL_Code(NEQSys_Code, C_Code):
 
 
     def __init__(self, *args, **kwargs):
-        self._basedir = os.path.dirname(__file__)
+        self.basedir = os.path.dirname(__file__)
         super(GSL_Code, self).__init__(*args, **kwargs)
 
 
