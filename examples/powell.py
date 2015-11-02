@@ -13,6 +13,7 @@ from sympy import exp as e
 from symneqsys import SimpleNEQSys, Problem
 from symneqsys.gsl import GSL_Solver
 
+
 class PowellSys(SimpleNEQSys):
 
     param_tokens = 'A'
@@ -32,8 +33,8 @@ def main(Sys, solver_type):
 
     sys = Sys()
     problem = Problem(sys, {'A': 1e4}, guess={'x0': 0.5, 'x1': 1.5},
-                      solver=GSL_Solver(save_temp=True, tempdir='./build/powell'))
-
+                      solver=GSL_Solver(save_temp=True,
+                                        tempdir='./build/powell'))
 
     success = problem.solve(itermax=100, solver_type=solver_type)
 

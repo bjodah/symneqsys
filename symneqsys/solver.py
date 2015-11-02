@@ -12,11 +12,10 @@ class Solver(object):
     reltol = 1e-6
     logger = None
 
-    solve_args = {} # speical keyword arguments to run in subclasses
+    solve_args = {}  # speical keyword arguments to run in subclasses
 
     def set_neqsys(self, neqsys):
         self._neqsys = neqsys
-
 
     def run(self, x0, params, itermax=100, **kwargs):
         """
@@ -25,7 +24,6 @@ class Solver(object):
         set success equal to True or False
         """
         pass
-
 
     def __getitem__(self, key):
         if self.num_result.success:
@@ -37,21 +35,20 @@ class Solver(object):
 
 class SciPy_Solver(Solver):
 
-    method = 'lm' # Least sqaure sense (linearly dep. rel. incl.)
+    method = 'lm'  # Least sqaure sense (linearly dep. rel. incl.)
 
     @property
     def options(self):
         return {'xtol': self.abstol}
 
-
     def run(self, x0, params, itermax=100):
         import scipy.optimize
 
         self.num_result = scipy.optimize.root(
-            fun = partial(self._neqsys.evaluate_residual,
-                          param_vals=params),
-            x0 = x0,
-            method = self.method,
-            jac = partial(self._neqsys.evaluate_jac,
-                          param_vals=params),
-            options = self.options)
+            fun=partial(self._neqsys.evaluate_residual,
+                        param_vals=params),
+            x0=x0,
+            method=self.method,
+            jac=partial(self._neqsys.evaluate_jac,
+                        param_vals=params),
+            options=self.options)

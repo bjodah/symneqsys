@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
+from __future__ import (absolute_import, division, print_function)
+
+
 import os
 
-import numpy as np
 import cython_gsl
 
-from pycompilation.compilation import CCompilerRunner
 from pycodeexport.codeexport import C_Code
 
 
@@ -22,11 +23,12 @@ class GSL_Code(NEQSys_Code, C_Code):
 
     obj_files = ['neqsys.o', 'solvers.o', '_solvers.o']
 
-    templates = ['neqsys_template.c',
-                 'main_ex_template.c',
-              ]
+    templates = [
+        'neqsys_template.c',
+        'main_ex_template.c',
+    ]
 
-    source_files = ['neqsys.c'] # other are precompiled
+    source_files = ['neqsys.c']  # other are precompiled
 
     so_file = '_solvers.so'
 
@@ -37,16 +39,16 @@ class GSL_Code(NEQSys_Code, C_Code):
         'options': ['fast', 'warn', 'pic'],
         'defmacros': ['GSL_RANGE_CHECK_OFF', 'HAVE_INLINE'],
         'libs': cython_gsl.get_libraries(),
-        'inc_dirs': [cython_gsl.get_include(), cython_gsl.get_cython_include_dir()],
+        'inc_dirs': [cython_gsl.get_include(),
+                     cython_gsl.get_cython_include_dir()],
         'lib_dirs': [cython_gsl.get_library_dir()]
     }
 
-    v_tok = 'y' # see neqsys_template.c
+    v_tok = 'y'  # see neqsys_template.c
     v_offset = None
 
-    param_tok = 'k' # see neqsys_template.c
+    param_tok = 'k'  # see neqsys_template.c
     param_offset = None
-
 
     def __init__(self, *args, **kwargs):
         self.basedir = os.path.dirname(__file__)
@@ -61,7 +63,7 @@ class GSL_Solver(BinarySolver):
     CodeClass = GSL_Code
 
     solve_args = {'fdfsolver_type': (
-        'newton', 'gnewton', 'hybridj', 'hybridsj'),}
+        'newton', 'gnewton', 'hybridj', 'hybridsj'), }
 
     def run(self, x0, params, itermax=100, **kwargs):
         self.num_result = self.binary_mod.solve(

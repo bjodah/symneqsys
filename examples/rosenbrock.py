@@ -11,13 +11,14 @@ Parameters taken from GNU GSL Manual
 from symneqsys import SimpleNEQSys, Problem
 from symneqsys.gsl import GSL_Solver
 
+
 class RosenbrockSys(SimpleNEQSys):
     param_tokens = 'a b'
     var_tokens = 'x0 x1'
 
     @property
     def exprs(self):
-        x0, x1, a, b = [self[token] for token \
+        x0, x1, a, b = [self[token] for token
                         in ('x0', 'x1', 'a', 'b')]
         return [a*(1-x0),
                 b*(x1-x0**2)]
@@ -29,9 +30,10 @@ def main(Sys, solver_type):
     """
 
     sys = Sys()
-    solver=GSL_Solver(save_temp=True, tempdir='./build/rosenbrock')
+    solver = GSL_Solver(save_temp=True, tempdir='./build/rosenbrock')
     solver.abstol = 1e-8
-    problem = Problem(sys, {'a':1, 'b':10}, guess={'x0': -10, 'x1': -5},
+    problem = Problem(sys, {'a': 1, 'b': 10},
+                      guess={'x0': -10, 'x1': -5},
                       solver=solver)
 
     success = problem.solve(itermax=100, solver_type=solver_type)

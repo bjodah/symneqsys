@@ -28,7 +28,7 @@ classifiers = [
 if '--help'in sys.argv[1:] or sys.argv[1] in (
         '--help-commands', 'egg_info', 'clean', '--version'):
     cmdclass_ = {}
-    ext_modules=ext_modules_,
+    ext_modules_ = [],
 else:
     from pycodeexport import pce_build_ext
     from symneqsys.nleq2._setup_nleq2 import get_nleq2_pce_ext
@@ -46,12 +46,14 @@ setup(
     version=version_,
     author='Björn Dahlgren',
     author_email='bjodah@DELETEMEgmail.com',
-    description='Solve non-linear systems of equation by combining CAS and conventional solvers.',
-    license = "BSD",
+    description=('Solve non-linear systems of equation by combining'
+                 ' CAS and conventional solvers.'),
+    license="BSD",
     url='https://github.com/bjodah/'+pkg_name,
-    download_url='https://github.com/bjodah/'+pkg_name+'/archive/v'+version_+'.tar.gz',
+    download_url=('https://github.com/bjodah/' + pkg_name +
+                  '/archive/v' + version_ + '.tar.gz'),
     packages=['symneqsys'],
     ext_modules=ext_modules_,
-    cmdclass = cmdclass_,
-    classifiers = classifiers
+    cmdclass=cmdclass_,
+    classifiers=classifiers
 )
