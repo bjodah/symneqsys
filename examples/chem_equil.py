@@ -13,8 +13,6 @@ from sympy import pprint
 from symneqsys import SimpleNEQSys, Problem
 from symneqsys.minpack import MINPACK_Solver
 
-from pycompilation.util import term_fmt
-
 
 class ChemSys(SimpleNEQSys):
     var_tokens = 'NH3 NH4p Hp OHm H2O'
@@ -46,12 +44,12 @@ def main(Sys, logger=None):
     """
 
     sys = Sys()
-    print(term_fmt('Variables:'))
+    print('Variables:')
     pprint(sys.v)
-    print(term_fmt('Expressions:'))
+    print('Expressions:')
     for expr in sys.exprs:
         pprint(expr)
-    print(term_fmt('Jacobian:'))
+    print('Jacobian:')
     pprint(sys.jac)
     solver=MINPACK_Solver(
         save_temp=True, tempdir='./build/chem_equil',
