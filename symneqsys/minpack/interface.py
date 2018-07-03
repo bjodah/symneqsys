@@ -5,6 +5,7 @@ from pycodeexport.codeexport import F90_Code
 from symneqsys.minpack._setup_minpack import f_sources
 from symneqsys.codeexport import BinarySolver, NEQSys_Code
 
+
 class MINPACK_Code(NEQSys_Code, F90_Code):
 
     build_files = [
@@ -12,7 +13,7 @@ class MINPACK_Code(NEQSys_Code, F90_Code):
     ] + ['prebuilt/'+x[:-1]+'o' for x in f_sources]
 
     obj_files = [x[:-1]+'o' for x in f_sources] +\
-                 ['solvers.o', '_solvers.o']
+                ['solvers.o', '_solvers.o']
 
     templates = ['solvers_template.f90']
 
@@ -30,6 +31,7 @@ class MINPACK_Code(NEQSys_Code, F90_Code):
     v_offset = 1
 
     param_tok = 'x'
+
     @property
     def param_offset(self):
         return 1 + len(self._neqsys.v)

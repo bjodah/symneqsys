@@ -1,3 +1,7 @@
+from .neqsys import NEQSys
+import sympy
+
+
 class SimpleNEQSys(NEQSys):
     """
     Lets a user create a NEQSys without manual instatiation
@@ -10,13 +14,13 @@ class SimpleNEQSys(NEQSys):
 
     def __init__(self):
         if self.var_tokens:
-            self.v = [self.mk_symb(t) for t in \
+            self.v = [self.mk_symb(t) for t in
                       self.var_tokens.split()]
         else:
             self.v = []
 
         if self.param_tokens:
-            self.params = [self.mk_symb(t) for t in \
+            self.params = [self.mk_symb(t) for t in
                            self.param_tokens.split()]
         else:
             self.params = []
@@ -24,14 +28,16 @@ class SimpleNEQSys(NEQSys):
     def is_unused(self, name):
         try:
             symb = self[name]
+            assert symb  # pyflakes
         except KeyError:
             return True
         return False
 
     def add_idx(self, token):
-        if self._indices == None: self._indices = []
+        if self._indices is None:
+            self._indices = []
         idx = sympy.Idx(token)
-        if not idx in self._indices:
+        if idx not in self._indices:
             self._indices.append(idx)
         else:
             assert self[token] == idx
@@ -48,5 +54,3 @@ class SimpleNEQSys(NEQSys):
             return sympy.Indexed(name, *idxs)
         else:
             return sympy.Symbol(token, real=self.real)
-
-#']')            ]            ]

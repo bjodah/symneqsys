@@ -9,7 +9,7 @@ Precompiles Levenberg Marquardt sources of netlib/minpack (downloaded
 when needed) to object files for speeding up compilations further ahead.
 """
 
-websrc='http://www.netlib.org/minpack/'
+websrc = 'http://www.netlib.org/minpack/'
 src_md5 = {
     'dpmpar.f': '290b5ab2f116903e49c8f542d7afbac6',
     'enorm.f': 'a63a84008c57c577e03b7d892b964bd5',
@@ -21,6 +21,7 @@ src_md5 = {
 }
 
 f_sources = src_md5.keys()
+
 
 def get_minpack_pce_ext(basename):
     from .interface import MINPACK_Code

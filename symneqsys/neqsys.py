@@ -1,6 +1,7 @@
 import sympy
 import numpy as np
 
+
 class NEQSys(object):
     """
     `v`: list of variables (sympy.Symbol instances)
@@ -18,7 +19,6 @@ class NEQSys(object):
     # variables, override this by changing `real` to False:
     real = True
 
-
     @property
     def jac(self):
         """
@@ -28,18 +28,15 @@ class NEQSys(object):
             len(self.exprs), len(self.v),
             lambda r, c: self.exprs[r].diff(self.v[c]))
 
-
     def evaluate_residual(self, v_vals, param_vals):
         subsd = dict(zip(self.v, v_vals)+zip(self.params, param_vals))
         return np.array([float(expr.subs(subsd)) for expr in self.exprs])
 
-
     def evaluate_jac(self, v_vals, param_vals):
         subsd = dict(zip(self.v, v_vals)+zip(self.params, param_vals))
         return np.array(
-            [[float(cell.subs(subsd)) for cell in row] for\
+            [[float(cell.subs(subsd)) for cell in row] for
              row in self.jac.tolist()])
-
 
     # Convenience methods
     def symbify_dictkeys(self, val_by_token):
@@ -50,30 +47,27 @@ class NEQSys(object):
         """
         return {self[k]: v for k, v in val_by_token.items()}
 
-
     @property
     def known_symbs(self):
         return self.v + self.params
-
 
     def __getitem__(self, key):
         if isinstance(key, sympy.Basic):
             match = None
             for known_symb in self.known_symbs:
                 if str(known_symb) == str(key):
-                    if match == None:
+                    if match is None:
                         match = known_symb
                     else:
                         # This place should never be reached
                         raise RuntimeError(
-                            'Key ambigous, there are ' +\
+                            'Key ambigous, there are '
                             'several symbols with same str repr')
-            if match == None:
+            if match is None:
                 raise KeyError('Key not found: {}'.format(key))
         else:
             return self[sympy.Symbol(key, real=self.real)]
         return match
-
 
 
 class SimpleNEQSys(NEQSys):
@@ -88,17 +82,16 @@ class SimpleNEQSys(NEQSys):
 
     def __init__(self):
         if self.var_tokens:
-            self.v = [self.mk_symb(t) for t in \
+            self.v = [self.mk_symb(t) for t in
                       self.var_tokens.split()]
         else:
             self.v = []
 
         if self.param_tokens:
-            self.params = [self.mk_symb(t) for t in \
+            self.params = [self.mk_symb(t) for t in
                            self.param_tokens.split()]
         else:
             self.params = []
-
 
     def mk_symb(self, token):
         return sympy.Symbol(token, real=self.real)

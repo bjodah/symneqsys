@@ -19,6 +19,7 @@ import numpy as np
 from symneqsys import SimpleNEQSys, Problem
 from symneqsys.gsl import GSL_Solver
 
+
 class ExpbSys(SimpleNEQSys):
     """
     Fits data to exponential curve
@@ -30,17 +31,19 @@ class ExpbSys(SimpleNEQSys):
 
     @property
     def exprs(self):
-        f = lambda x: self['A']*sympy.exp(-self['l']*x)+self['b']
-        x,y,s = self['x','y','s']
+        def f(x):
+            return self['A']*sympy.exp(-self['l']*x)+self['b']
+        x, y, s = self['x', 'y', 's']
         return [(f(x) - y)/s]
 
 
 def main(Sys):
     sys = Sys()
-    x = np.linspace(0,39,40)
-    y = 1.0*5*np.exp(-0.1*x)+np.random.normal(scale=0.1,size=x.size)
+    x = np.linspace(0, 39, 40)
+    y = 1.0*5*np.exp(-0.1*x)+np.random.normal(scale=0.1, size=x.size)
     problem = Problem(sys, {'x[i]': x, 'y[i]': y},
-                      solver=GSL_Solver(save_temp=True, tempdir='./build/expfit'))
+                      solver=GSL_Solver(save_temp=True,
+                                        tempdir='./build/expfit'))
     success = problem.solve()
     if success:
         print("Success:")

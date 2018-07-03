@@ -3,6 +3,7 @@ from itertools import chain
 from pycodeexport.codeexport import Generic_Code, DummyGroup, ArrayifyGroup
 from symneqsys.solver import Solver
 
+
 class NEQSys_Code(Generic_Code):
     """
     Wraps some sympy functionality of code generation from matrices
@@ -11,11 +12,9 @@ class NEQSys_Code(Generic_Code):
 
     tempdir_basename = "_symneqsys_compile"
 
-
     def __init__(self, neqsys, *args, **kwargs):
         self._neqsys = neqsys
         super(NEQSys_Code, self).__init__(*args, **kwargs)
-
 
     def variables(self):
         """
@@ -68,35 +67,33 @@ class BinarySolver(Solver):
         self.save_temp = kwargs.pop('save_temp', False)
         self.logger = kwargs.pop('logger', None)
         if len(kwargs) > 0:
-            raise TypeError('{} got (an) unexpected keyword argument(s): {}'.format(
-                self, ', '.join(kwargs.keys())))
-        #super(BinarySolver, self).__init__(**kwargs)
-
+            fmtstr = '{} got (an) unexpected keyword argument(s): {}'
+            raise TypeError(fmtstr.format(self, ', '.join(kwargs.keys())))
 
     def set_neqsys(self, neqsys):
         super(BinarySolver, self).set_neqsys(neqsys)
-        self._binary_mod = None # <-- Clears cache
+        self._binary_mod = None  # <-- Clears cache
         self._code = self.CodeClass(
-            neqsys = self._neqsys,
-            tempdir = self.tempdir,
-            save_temp = self.save_temp,
+            neqsys=self._neqsys,
+            tempdir=self.tempdir,
+            save_temp=self.save_temp,
             logger=self.logger,
         )
 
-
     def clean(self):
         self._code.clean()
-
 
     @property
     def binary_mod(self):
         """
         Returns compiled and imported module.
-        Note: lazy caching is employed, set self._binary_mod equal to None to invalidate
+        Note: lazy caching is employed, set self._binary_mod equal to None to
+        invalidate
         """
-        if self._binary_mod == None:
+        if self._binary_mod is None:
             self._binary_mod = self._code.compile_and_import_binary()
         return self._binary_mod
+
 
 class Result(dict):
     """ Copy from scipy/optimize/optimize.py, cannot import  """
